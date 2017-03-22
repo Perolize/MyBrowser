@@ -282,11 +282,11 @@ function getURL() {
     $('.bottombar .navigation .url').html(url)
 }
 
-function search(input: string) {
+export function search(input: string) {
     const url = normalizeUrl(input);
 
-    if (isUrl(url) === true || $('.navigation .url').text().startsWith("mybrowser://")) {
-        $('.navigation .url').html(url);
+    if (isUrl(url) === true || input.startsWith("mybrowser://")) {
+        $('.navigation .url').text(url);
         (document.querySelector('.page.active') as any).loadURL(url);
         webview.onNavigating();
     } else {

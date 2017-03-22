@@ -97,6 +97,7 @@ export function onWebViewCreated(id: Number = undefined) {
     contextMenu.onOpenInNewTab();
     contextMenu.onContextMenu();
     onHoverLink(id);
+    onSearch()
 }
 
 export function setURL(id: Number = undefined) {
@@ -210,6 +211,8 @@ export function onNavigating(id: Number = undefined) {
         wv = document.querySelector('.pages webview.active');
     }
     const page = wv as any;
+    const elem = document.querySelector(`.tabs li[data-id="${page.getAttribute('data-id')}"] .favicon`) as HTMLImageElement;
+
     if (page.canGoForward()) {
         $('.forward').addClass('active');
         $('.info').addClass('forwardActive');
@@ -228,6 +231,7 @@ export function onNavigating(id: Number = undefined) {
         $('.back').prop('disabled', false);
     }
 
+    elem.style.display = 'none';
     addListenerForFavicon(parseInt(page.getAttribute('data-id')));
 }
 
@@ -270,21 +274,27 @@ export function onHoverLink(id: Number = undefined) {
 }
 
 export function render(page: string, url: string, code: number = 200, desc: string = 'OK', id: Number = undefined) {
-    let wv;
+    let wv: any;
     if (id !== undefined) {
         wv = document.querySelector(`.pages webview[data-id="${id}"]`) as any;
     } else {
         wv = document.querySelector('.pages webview.active') as any;
     }
 
+    // wv.setAttribute('preload', `${__dirname}/pages/${page}.js`);
+    wv.setAttribute('nodeintegration', '')
+
     wv.addEventListener('dom-ready', () => {
         wv.loadURL(`mybrowser://${page}`)
         document.querySelector('.navigation .url').innerHTML = url;
         urlModule.styleUrl();
-        console.log(wv)
-        wv.send('js', `${__dirname}/pages/${page}.js`);
-        wv.setAttribute('preload', `${__dirname}/pages/${page}.js`);
     }, { once: true });
+}
+
+export function onSearch() {
+    electron.ipcRenderer.once('search', (e, msg) => {
+        main.search(msg);
+    });
 }
 
 module.exports.onWebViewCreated = onWebViewCreated;
