@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Blank</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="mybrowser://css/bootstrap-reboot.min.css">
+    <link rel="stylesheet" href="mybrowser://css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="mybrowser://css/font-awesome.min.css">
+    <link rel="stylesheet" href="mybrowser://blankCSS">
+
+    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <img class="logo" src="mybrowser://img/logo.png" />
+            <input class="searchBar" value="" maxlength="256" autocomplete="on" placeholder="Search " type="search">
+        </div>
+    </header>
+
+    <script src="mybrowser://js/pages/blank.js"></script>
+    <!--<script>
+        const {ipcRenderer} = require('electron');
+        const path = require('path');
+
+        ipcRenderer.on('js', (e, target) => {
+            console.log('got that!')
+        });
+
+        const script = document.createElement('script');
+        script.src = path.join(__dirname, '../../../../../../dist/js/pages/blank.js');
+        document.body.appendChild(script);
+
+        // const selectedSearchEngine = require(path.join(__dirname, '../../../../../../dist/settings')).selectedSearchEngine;
+        // console.log(selectedSearchEngine);
+        // require('../settings')
+        // require('./js/blank.js')
+    </script>-->
+</body>
+
+</html>

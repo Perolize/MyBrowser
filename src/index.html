@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>MyBrowser</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="./css/bootstrap-reboot.min.css">
+  <link rel="stylesheet" href="./css/bootstrap-grid.min.css">
+  <link rel="stylesheet" href="./css/font-awesome.min.css">
+  <link rel="stylesheet" href="./style.css">
+
+  <script>
+    window.$ = window.jQuery = require('jquery');
+  </script>
+</head>
+
+<body>
+  <div class="navbar">
+    <div class="topbar">
+      <ul class="tabs">
+        <li class="nav-item active" data-id="0">
+          <span class="fa fa-spinner"></span>
+          <img class="favicon" />
+          <a class="nav-link">Blank</a>
+          <a class="tab-close"><i class="fa fa-times"></i></a>
+        </li>
+        <a class="new-tab"><i class="fa fa-plus"></i></a>
+      </ul>
+      <ul class="win-controls">
+        <li class="win-min">
+          <a><i class="fa fa-window-minimize"></i></a>
+        </li>
+        <li class="win-max">
+          <a><i class="fa fa-window-maximize"></i></a>
+        </li>
+        <li class="win-unmax">
+          <a><i class="fa fa-window-restore"></i></a>
+        </li>
+        <li class="win-cls">
+          <a><i class="fa fa-times"></i></a>
+        </li>
+      </ul>
+    </div>
+    <div class="bottombar">
+      <div class="navigation">
+        <div class="btns">
+          <input class="btn back fa" value="&#xf060;" type="button" />
+          <input class="btn forward fa" value="&#xf061;" type="button" />
+        </div>
+        <input class="info fa" type="button" value="&#xf05a;" />
+        <input class="secure fa" type="button" value="&#xf023;" />
+        <input class="mybrowser" type="button" value="MyBrowser">
+        <div class="url" type="text" contenteditable="true"></div>
+        <input class="refresh fa" type="button" value="&#xf021;" />
+      </div>
+      <ul class="links">
+        <li class="link">
+          <a><i class="fa fa-star-o"></i></a>
+        </li>
+        <ul class="extensions">
+          <li class="link popup">
+            <a><i class="fa fa-download"></i></a>
+            <div class="download-manager popup">
+              <p class="no-downloads">No avaliable downloads</p>
+              <button class="big btn">Show all downloads</button>
+            </div>
+          </li>
+          <li class="link">
+            <a><i class="fa fa-home"></i></a>
+          </li>
+        </ul>
+        <li class="settings link">
+          <a><i class="fa fa-bars"></i></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="search" style="display: none">
+    <input class="searchbox" type="text">
+    <span class="matches">No Results</span>
+    <input type="button" class="previous btn fa" value="">
+    <input type="button" class="next btn fa" value="">
+  </div>
+  <div class="pages">
+    <webview class="page active" src="mybrowser://blank" data-id="0" nodeintegration></webview>
+  </div>
+  <p class="linkHint" style="display: none;"></p>
+</body>
+
+<script>
+  // You can also require other files to run in this process
+  require('./renderer')
+  require('jquery')
+  require('dragula')
+  require('./js/main.js')
+  require('./js/navbar.js')
+  require('./js/shortcuts.js')
+
+</script>
+
+</html>
