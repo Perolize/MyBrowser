@@ -6,40 +6,129 @@
     <title>Blank</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="mybrowser://css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="mybrowser://css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="mybrowser://js/plugins/awesomplete.css" />
     <link rel="stylesheet" href="mybrowser://css/font-awesome.min.css">
     <link rel="stylesheet" href="mybrowser://blankCSS">
 
-    <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="mybrowser://js/plugins/awesomplete.min.js"></script>
+    <script src="mybrowser://js/plugins/xregexp.js"></script>
+    <!--<script src="mybrowser://js/plugins/jquery.autocomplete.min.js"></script>-->
+    <!--<script src="../../node_modules/electron-safe-ipc/guest-bundle.js"></script>-->
 </head>
 
 <body>
     <header>
         <div class="container">
             <img class="logo" src="mybrowser://img/logo.png" />
-            <input class="searchBar" value="" maxlength="256" autocomplete="on" placeholder="Search " type="search">
+            <input class="searchBar awesomeplete" maxlength="256" placeholder="Search " type="search" data-list="#autocomplete">
+            <ul id="autocomplete"></ul>
         </div>
     </header>
 
-    <script src="mybrowser://js/pages/blank.js"></script>
-    <!--<script>
-        const {ipcRenderer} = require('electron');
-        const path = require('path');
+    <!--<script src="mybrowser://js/pages/blank.js"></script>-->
+    <script>
+        const searchBar = document.querySelector('.searchBar');
+        const awesomplete = new Awesomplete(searchBar);
 
-        ipcRenderer.on('js', (e, target) => {
-            console.log('got that!')
+        const html = document.querySelector('#autocomplete').innerHTML;
+        document.querySelector('#autocomplete').remove();
+        const ul = document.createElement('ul');
+        ul.id = 'autocomplete';
+        ul.innerHTML = html;
+        document.querySelector('div.awesomplete').appendChild(ul);
+
+        const list = document.querySelector('#autocomplete');
+        list.setAttribute('hidden', '');
+
+        awesomplete.autoFirst = true;
+        awesomplete.minChars = 1;
+        awesomplete.ul = list;
+        awesomplete.list = list;
+        awesomplete.sort = false;
+
+        searchBar.addEventListener('input', () => {
+            awesomplete.suggestions = awesomplete._list
+            $('.searchBar').parent().promise()
+                .then(() => {
+                    awesomplete.list = list;
+                    list.removeAttribute('hidden');
+                })
+                .then(() => {
+                    if (searchBar.value === '') {
+                        removeClassHebrew();
+                    }
+                })
+                .then(() => {
+                    awesomplete.goto(0);
+                });
         });
 
-        const script = document.createElement('script');
-        script.src = path.join(__dirname, '../../../../../../dist/js/pages/blank.js');
-        document.body.appendChild(script);
+        list.querySelectorAll('li').forEach(item => {
+            item.addEventListener('mouseover', () => {
+                list.querySelectorAll('li').forEach(item => item.removeAttribute('aria-selected'))
+            });
+        });
 
-        // const selectedSearchEngine = require(path.join(__dirname, '../../../../../../dist/settings')).selectedSearchEngine;
-        // console.log(selectedSearchEngine);
-        // require('../settings')
-        // require('./js/blank.js')
-    </script>-->
+        searchBar.addEventListener('awesomplete-highlight', e => {
+            const text = document.querySelector('li[aria-selected="true"]').textContent
+            searchBar.value = text;
+        });
+
+        searchBar.addEventListener('awesomplete-select', e => {
+            const text = document.querySelector('li[aria-selected="true"]').textContent
+
+            e.preventDefault();
+            searchBar.value = text;
+        });
+
+        searchBar.addEventListener('keydown', e => {
+            if (e.which === 40) {
+                awesomplete.next()
+            } else if (e.which === 38) {
+                awesomplete.previous();
+            }
+        });
+
+        function addClassHebrew() {
+            $('.awesomplete').each(function () {
+                if (isHebrew($(this).text()))
+                    $(this).addClass('hebrew');
+            });
+        }
+
+        function removeClassHebrew() {
+            $('.awesomplete').each(function () {
+                if (!isHebrew($(this).text()))
+                    $(this).removeClass('hebrew');
+            });
+        }
+
+        function isHebrew(str) {
+            var isHebrew = XRegExp('[\\p{Hebrew}]');
+            var partHebrew = 0;
+            var rtlIndex = 0;
+            var isRTL = false;
+
+            for (i = 0; i < str.length; i++) {
+                if (isHebrew.test(str[i]))
+                    partHebrew++;
+            }
+            rtlIndex = partHebrew;
+            if (rtlIndex > .5) {
+                isRTL = true;
+            }
+
+            return isRTL;
+        }
+
+
+        $('.searchBar').focus(addClassHebrew).on('input', (addClassHebrew)).on('input', (addClassHebrew));
+        $('.searchBar').focus(removeClassHebrew).on('input', (removeClassHebrew)).on('input', (removeClassHebrew));
+    </script>
 </body>
 
 </html>

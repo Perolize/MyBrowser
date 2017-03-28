@@ -22,7 +22,7 @@ export function onWebViewCreated(id: Number = undefined) {
         const id = parseInt($('.tabs li').last().attr('data-id')) + 1;
         const prevTab = $('.tabs li.active');
         const tabLI = `<li class="nav-item active" data-id="${id}"><span class="fa fa-spinner"></span><img class="favicon" /><a class="nav-link">Blank</a><a class="tab-close"><i class="fa fa-times"></i></a></li>`;
-        const page = `<webview class="page active" src="${e.url}" data-id="${id}" nodeintegration></webview>`
+        const page = `<webview class="page active" src="${e.url}" data-id="${id}"></webview>`
 
         $('.tabs .nav-item').removeClass('active');
         $(tabLI).insertAfter(prevTab);
@@ -56,8 +56,19 @@ export function onWebViewCreated(id: Number = undefined) {
         }
     }, { once: true });
 
+    wv.addEventListener('will-navigate', (e: any) => {
+        onNavigating(id)
+        checkURL(e.url, id);
+    });
+
     wv.addEventListener('did-navigate', (e: any) => {
         onNavigating(id)
+        checkURL(e.url, id);
+    });
+
+    wv.addEventListener('did-navigate-in-page', (e: any) => {
+        onNavigating(id)
+        checkURL(e.url, id);
     });
 
     wv.addEventListener('enter-html-full-screen', () => {
@@ -97,7 +108,7 @@ export function onWebViewCreated(id: Number = undefined) {
     contextMenu.onOpenInNewTab();
     contextMenu.onContextMenu();
     onHoverLink(id);
-    onSearch()
+    onSearch();
 }
 
 export function setURL(id: Number = undefined) {
@@ -203,6 +214,23 @@ export function addListenerForTitle(id: Number = undefined) {
     });
 }
 
+export function checkURL(url: String, id: Number = undefined) {
+    let wv;
+    if (id !== undefined) {
+        wv = document.querySelector(`.pages webview[data-id="${id}"]`);
+    } else {
+        wv = document.querySelector('.pages webview.active');
+    }
+
+    console.log(url)
+
+    if (url.startsWith('mybrowser://')) {
+        wv.setAttribute('nodeintegration', '');
+    } else {
+        wv.removeAttribute('nodeintegration');
+    }
+}
+
 export function onNavigating(id: Number = undefined) {
     let wv;
     if (id !== undefined) {
@@ -230,6 +258,11 @@ export function onNavigating(id: Number = undefined) {
     } else {
         $('.back').prop('disabled', false);
     }
+
+    setTimeout(() => {
+        $('.navigation .url').text(page.getAttribute('src'));
+        urlModule.styleUrl()
+    }, 1);
 
     elem.style.display = 'none';
     addListenerForFavicon(parseInt(page.getAttribute('data-id')));
@@ -281,19 +314,39 @@ export function render(page: string, url: string, code: number = 200, desc: stri
         wv = document.querySelector('.pages webview.active') as any;
     }
 
-    // wv.setAttribute('preload', `${__dirname}/pages/${page}.js`);
-    wv.setAttribute('nodeintegration', '')
+    wv.setAttribute('preload', `./js/pages/${page}.js`);
+    // wv.setAttribute('nodeintegration', '')
 
     wv.addEventListener('dom-ready', () => {
-        wv.loadURL(`mybrowser://${page}`)
+        // wv.loadURL(`mybrowser://${page}`)
         document.querySelector('.navigation .url').innerHTML = url;
         urlModule.styleUrl();
     }, { once: true });
 }
 
-export function onSearch() {
-    electron.ipcRenderer.once('search', (e, msg) => {
-        main.search(msg);
+export function onSearch(id: Number = undefined) {
+    let wv: any;
+    if (id !== undefined) {
+        wv = document.querySelector(`.pages webview[data-id="${id}"]`) as any;
+    } else {
+        wv = document.querySelector('.pages webview.active') as any;
+    }
+
+    // const ipc = require("electron-safe-ipc/host");
+    // electron.ipcRenderer.once('search', (e, msg) => {
+    //     console.log(msg)
+    //     main.search(msg);
+    // });
+
+    wv.addEventListener('ipc-message', (e: any) => {
+        if (e.channel === 'search') {
+            main.search(e.args[0])
+        } else if(e.channel === 'getSuggestions') {
+            const name = e.args[0].name;
+            const url = e.args[0].url;
+
+            main.getSuggestions(name, url);
+        }
     });
 }
 

@@ -80,7 +80,7 @@ $(".nav-item .tab-close").on("click", onClickRemoveTab);
 document.querySelector(".new-tab").addEventListener("click", () => {
     const id = parseInt($('.new-tab').prev().attr('data-id')) + 1;
     const tabLI = `<li class="nav-item active" data-id="${id}"><span class="fa fa-spinner"></span><img class="favicon" /><a class="nav-link">Blank</a><a class="tab-close"><i class="fa fa-times"></i></a></li>`;
-    const page = `<webview class="page active" src="mybrowser://blank" data-id="${id}" nodeintegration></webview>`
+    const page = `<webview class="page active" src="mybrowser://blank" data-id="${id}"></webview>`
 
     const wv = document.querySelector('webview.active');
 
@@ -193,6 +193,9 @@ export function createNewTab(id: number, url: string = 'mybrowser://blank') {
     $(".nav-item .tab-close").on("click", onClickRemoveTab);
 
     webview.onWebViewCreated(id);
+    if (url === 'mybrowser://blank') {
+        webview.render('blank', 'mybrowser://blank');
+    }
 }
 
 export function onClickTab() {
@@ -232,40 +235,48 @@ export function onClickRemoveTab(e: Event) {
 
     if ($(`.before`).length > 0) {
         const newId = $(`.before`).attr('data-id');
-        $(`[data-id="${newId}"]`).addClass('active');
-
-        $('.tabs .nav-item').removeClass('before');
-        $('.tabs .nav-item').removeClass('after');
-
-        $('.tabs .nav-item.active').prev().addClass('before');
-        if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
-            $('.tabs .nav-item.active').next().addClass('after');
-        }
-
-        $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
-        $(".nav-item .tab-close").on("click", onClickRemoveTab);
-
-        webview.setTitle(parseInt(newId));
-        webview.onNavigating(parseInt(newId));
+        $(`[data-id="${newId}"]`).addClass('active').promise()
+            .then(() => {
+                $('.tabs .nav-item').removeClass('before');
+                $('.tabs .nav-item').removeClass('after');
+            })
+            .then(() => {
+                $('.tabs .nav-item.active').prev().addClass('before');
+                if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
+                    $('.tabs .nav-item.active').next().addClass('after');
+                }
+            })
+            // .then(() => {
+            //     $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
+            //     $(".nav-item .tab-close").on("click", onClickRemoveTab);
+            // })
+            .then(() => {
+                webview.setTitle(parseInt(newId));
+                webview.onNavigating(parseInt(newId));
+            });
 
         return;
     } else if ($(`.after`).length > 0) {
         const newId = $(`.after`).attr('data-id');
-        $(`[data-id="${newId}"]`).addClass('active');
-
-        $('.tabs .nav-item').removeClass('before');
-        $('.tabs .nav-item').removeClass('after');
-
-        $('.tabs .nav-item.active').prev().addClass('before');
-        if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
-            $('.tabs .nav-item.active').next().addClass('after');
-        }
-
-        $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
-        $(".nav-item .tab-close").on("click", onClickRemoveTab);
-
-        webview.setTitle(parseInt(newId));
-        webview.onNavigating(parseInt(newId));
+        $(`[data-id="${newId}"]`).addClass('active').promise()
+            .then(() => {
+                $('.tabs .nav-item').removeClass('before');
+                $('.tabs .nav-item').removeClass('after');
+            })
+            .then(() => {
+                $('.tabs .nav-item.active').prev().addClass('before');
+                if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
+                    $('.tabs .nav-item.active').next().addClass('after');
+                }
+            })
+            // .then(() => {
+            //     $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
+            //     $(".nav-item .tab-close").on("click", onClickRemoveTab);
+            // })
+            .then(() => {
+                webview.setTitle(parseInt(newId));
+                webview.onNavigating(parseInt(newId));
+            });
 
         return;
     }
@@ -280,6 +291,57 @@ export function onClickRemoveTab(e: Event) {
 function getURL() {
     let url = (document.querySelector('.pages webview.active') as any).getURL();
     $('.bottombar .navigation .url').html(url)
+}
+
+export function getSuggestions(name: String, url: any, id: Number = undefined) {
+    let suggestions: any[] = [];
+    let wv: any;
+    if (id !== undefined) {
+        wv = document.querySelector(`.pages webview[data-id="${id}"]`) as any;
+    } else {
+        wv = document.querySelector('.pages webview.active') as any;
+    }
+
+    switch (name) {
+        case 'Google':
+            fetch(url)
+                .then(response => {
+                    return response.json();
+                })
+                .then(results => {
+                    results[1].forEach((v: any, i: any) => {
+                        suggestions.push(results[1][i]);
+                    });
+                    wv.send('getSuggestions', suggestions);
+                });
+            break;
+        case 'DuckDuckGo':
+            fetch(url)
+                .then(response => {
+                    return response.json();
+                })
+                .then(results => {
+                    results.forEach((v: any, i: any) => {
+                        suggestions.push(results[i].phrase);
+                    });
+                    wv.send('getSuggestions', suggestions);
+                });
+            break;
+        default:
+            fetch(url)
+                .then(response => {
+                    return response.json();
+                })
+                .then(results => {
+                    results.forEach((v: any, i: any) => {
+                        suggestions.push(results[i].phrase);
+                    });
+                    wv.send('getSuggestions', suggestions);
+                });
+            break;
+    }
+
+    return suggestions;
 }
 
 export function search(input: string) {
@@ -306,3 +368,4 @@ function searchFor(input: String) {
 module.exports.search = search;
 module.exports.onClickTab = onClickTab;
 module.exports.onClickRemoveTab = onClickRemoveTab;
+module.exports.getSuggestions = getSuggestions;

@@ -9,10 +9,43 @@ img.logo {
     margin-bottom: 1rem;
 }
 
+.awesomplete {
+    display: block;
+}
+
+.awesomplete.hebrew {
+    text-align: right;
+    direction: rtl;
+}
+
 input.searchBar {
     width: 100%;
     border: 1px solid #c3c3c3;
     padding: .3rem .4rem;
     border-radius: .2rem;
     outline-color: #3498db;
+}
+
+.awesomplete ul {
+    margin: 0;
+    border-radius: 0px 0px 8px 8px;
+    border-top: 0;
+    padding: .2rem .3rem;
+    transition: 0s;
+}
+
+.awesomplete ul::before {
+    content: none;
+}
+
+.awesomplete ul li {
+    border-radius: .2rem;
+    margin: .2rem;
+    transition: all .1s;
+}
+
+.awesomplete ul li:hover,
+.awesomplete ul li[aria-selected="true"] {
+    background: #3c9cdc;
+    color: #fff;
 }
