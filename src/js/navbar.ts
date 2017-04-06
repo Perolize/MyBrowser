@@ -1,4 +1,4 @@
-document.querySelector('.bottombar .link.popup').addEventListener('click', e => {
+$('.bottombar .link.popup').on('click', e => {
     const target = e.target as HTMLElement;
     target.parentElement.parentElement.querySelector('div.popup').classList.toggle('active');
     document.querySelector('.topbar').classList.toggle('no-drag');

@@ -1,5 +1,5 @@
 document.addEventListener('keydown', e => {
-    if ((e.ctrlKey && e.keyCode == 70) || (e.metaKey && e.keyCode == 70)) {
+    if ((e.ctrlKey && e.keyCode == 70) || (e.keyCode === 91 && e.keyCode === 70)) {
         const search = document.querySelector('.search') as HTMLElement;
 
         if (search.style.display !== 'none') {
@@ -9,6 +9,25 @@ document.addEventListener('keydown', e => {
             (document.querySelector('.search input.searchbox') as HTMLElement).focus();
             searchInPage();
         }
+    }
+
+    if ((e.ctrlKey && e.shiftKey && e.keyCode == 73) || (e.keyCode === 91 && e.shiftKey && e.keyCode === 73)) {
+        // e.preventDefault();
+
+        const wv = document.querySelector('webview.active') as any;
+        if (!wv.isDevToolsOpened()) {
+            wv.openDevTools();
+        } else {
+            wv.closeDevTools();
+        }
+    }
+
+    if (e.keyCode === 116) {
+        e.preventDefault();
+
+        const wv = document.querySelector('webview.active') as any;
+
+        wv.reload();
     }
 });
 
@@ -53,7 +72,7 @@ document.querySelector('.search input.previous').addEventListener('click', funct
             forward: false,
             findNext: true
         })
-        (document.querySelector('.search input.searchbox') as HTMLElement).focus();
+            (document.querySelector('.search input.searchbox') as HTMLElement).focus();
     }
 })
 
@@ -65,7 +84,7 @@ document.querySelector('.search input.next').addEventListener('click', function 
             forward: true,
             findNext: true
         })
-        (document.querySelector('.search input.searchbox') as HTMLElement).focus();
+            (document.querySelector('.search input.searchbox') as HTMLElement).focus();
     }
 })
 

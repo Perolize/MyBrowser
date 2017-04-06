@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="mybrowser://css/font-awesome.min.css">
     <link rel="stylesheet" href="mybrowser://blankCSS">
 
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="mybrowser://js/plugins/jquery.min.js"></script>
     <script src="mybrowser://js/plugins/awesomplete.min.js"></script>
     <script src="mybrowser://js/plugins/xregexp.js"></script>
     <!--<script src="mybrowser://js/plugins/jquery.autocomplete.min.js"></script>-->
@@ -23,111 +23,116 @@
 <body>
     <header>
         <div class="container">
-            <img class="logo" src="mybrowser://img/logo.png" />
-            <input class="searchBar awesomeplete" maxlength="256" placeholder="Search " type="search" data-list="#autocomplete">
+            <img class="logo" src="mybrowser://img/logo.png" draggable="false" />
+            <input class="searchBar awesomeplete" maxlength="256" placeholder="Search " type="search" data-list="#autocomplete" autofocus>
             <ul id="autocomplete"></ul>
         </div>
     </header>
 
     <!--<script src="mybrowser://js/pages/blank.js"></script>-->
     <script>
-        const searchBar = document.querySelector('.searchBar');
-        const awesomplete = new Awesomplete(searchBar);
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchBar = document.querySelector('.searchBar');
+            const awesomplete = new Awesomplete(searchBar);
 
-        const html = document.querySelector('#autocomplete').innerHTML;
-        document.querySelector('#autocomplete').remove();
-        const ul = document.createElement('ul');
-        ul.id = 'autocomplete';
-        ul.innerHTML = html;
-        document.querySelector('div.awesomplete').appendChild(ul);
+            const html = document.querySelector('#autocomplete').innerHTML;
+            document.querySelector('#autocomplete').remove();
+            const ul = document.createElement('ul');
+            ul.id = 'autocomplete';
+            ul.innerHTML = html;
+            document.querySelector('div.awesomplete').appendChild(ul);
 
-        const list = document.querySelector('#autocomplete');
-        list.setAttribute('hidden', '');
+            const list = document.querySelector('#autocomplete');
+            list.setAttribute('hidden', '');
 
-        awesomplete.autoFirst = true;
-        awesomplete.minChars = 1;
-        awesomplete.ul = list;
-        awesomplete.list = list;
-        awesomplete.sort = false;
+            awesomplete.autoFirst = true;
+            awesomplete.minChars = 1;
+            awesomplete.ul = list;
+            awesomplete.list = list;
+            awesomplete.sort = false;
 
-        searchBar.addEventListener('input', () => {
-            awesomplete.suggestions = awesomplete._list
-            $('.searchBar').parent().promise()
-                .then(() => {
-                    awesomplete.list = list;
-                    list.removeAttribute('hidden');
-                })
-                .then(() => {
-                    if (searchBar.value === '') {
-                        removeClassHebrew();
-                    }
-                })
-                .then(() => {
-                    awesomplete.goto(0);
+            searchBar.focus();
+            setTimeout(() => { searchBar.focus(); }, 1);
+
+            searchBar.addEventListener('input', () => {
+                awesomplete.suggestions = awesomplete._list
+                $('.searchBar').parent().promise()
+                    .then(() => {
+                        awesomplete.list = list;
+                        list.removeAttribute('hidden');
+                    })
+                    .then(() => {
+                        if (searchBar.value === '') {
+                            removeClassHebrew();
+                        }
+                    })
+                    .then(() => {
+                        awesomplete.goto(0);
+                    });
+            });
+
+            list.querySelectorAll('li').forEach(item => {
+                item.addEventListener('mouseover', () => {
+                    list.querySelectorAll('li').forEach(item => item.removeAttribute('aria-selected'))
                 });
-        });
-
-        list.querySelectorAll('li').forEach(item => {
-            item.addEventListener('mouseover', () => {
-                list.querySelectorAll('li').forEach(item => item.removeAttribute('aria-selected'))
             });
-        });
 
-        searchBar.addEventListener('awesomplete-highlight', e => {
-            const text = document.querySelector('li[aria-selected="true"]').textContent
-            searchBar.value = text;
-        });
-
-        searchBar.addEventListener('awesomplete-select', e => {
-            const text = document.querySelector('li[aria-selected="true"]').textContent
-
-            e.preventDefault();
-            searchBar.value = text;
-        });
-
-        searchBar.addEventListener('keydown', e => {
-            if (e.which === 40) {
-                awesomplete.next()
-            } else if (e.which === 38) {
-                awesomplete.previous();
-            }
-        });
-
-        function addClassHebrew() {
-            $('.awesomplete').each(function () {
-                if (isHebrew($(this).text()))
-                    $(this).addClass('hebrew');
+            searchBar.addEventListener('awesomplete-highlight', e => {
+                const text = document.querySelector('li[aria-selected="true"]').textContent
+                searchBar.value = text;
             });
-        }
 
-        function removeClassHebrew() {
-            $('.awesomplete').each(function () {
-                if (!isHebrew($(this).text()))
-                    $(this).removeClass('hebrew');
+            searchBar.addEventListener('awesomplete-select', e => {
+                const text = document.querySelector('li[aria-selected="true"]').textContent
+
+                e.preventDefault();
+                searchBar.value = text;
             });
-        }
 
-        function isHebrew(str) {
-            var isHebrew = XRegExp('[\\p{Hebrew}]');
-            var partHebrew = 0;
-            var rtlIndex = 0;
-            var isRTL = false;
+            searchBar.addEventListener('keydown', e => {
+                if (e.which === 40) {
+                    awesomplete.next()
+                } else if (e.which === 38) {
+                    awesomplete.previous();
+                }
+            });
 
-            for (i = 0; i < str.length; i++) {
-                if (isHebrew.test(str[i]))
-                    partHebrew++;
-            }
-            rtlIndex = partHebrew;
-            if (rtlIndex > .5) {
-                isRTL = true;
+            function addClassHebrew() {
+                $('.awesomplete').each(function () {
+                    if (isHebrew($(this).text()))
+                        $(this).addClass('hebrew');
+                });
             }
 
-            return isRTL;
-        }
+            function removeClassHebrew() {
+                $('.awesomplete').each(function () {
+                    if (!isHebrew($(this).text()))
+                        $(this).removeClass('hebrew');
+                });
+            }
+
+            function isHebrew(str) {
+                var isHebrew = XRegExp('[\\p{Hebrew}]');
+                var partHebrew = 0;
+                var rtlIndex = 0;
+                var isRTL = false;
+
+                for (i = 0; i < str.length; i++) {
+                    if (isHebrew.test(str[i]))
+                        partHebrew++;
+                }
+                rtlIndex = partHebrew;
+                if (rtlIndex > .5) {
+                    isRTL = true;
+                }
+
+                return isRTL;
+            }
 
 
-        $('.searchBar').focus(addClassHebrew).on('input', (addClassHebrew)).on('input', (addClassHebrew));
-        $('.searchBar').focus(removeClassHebrew).on('input', (removeClassHebrew)).on('input', (removeClassHebrew));
+            $('.searchBar').focus(addClassHebrew).on('input', (addClassHebrew)).on('input', (addClassHebrew));
+            $('.searchBar').focus(removeClassHebrew).on('input', (removeClassHebrew)).on('input', (removeClassHebrew));
+        });
     </script>
 </body>
 

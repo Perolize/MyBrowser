@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="mybrowser://css/bootstrap-reboot.min.css">
+    <link rel="stylesheet" href="mybrowser://css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="mybrowser://css/font-awesome.min.css" async>
+    <link rel="stylesheet" href="mybrowser://settingsCSS">
+
+    <script src="mybrowser://js/plugins/jquery.min.js"></script>
+    <script src="mybrowser://js/plugins/awesomplete.min.js"></script>
+    <script src="mybrowser://js/plugins/xregexp.js"></script>
+</head>
+
+<body class="row">
+    <div class="sidebar col col-sm-3 col-xl-2">
+        <a href="#" setting="general" class="active"><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp; <span>General</span></a>
+        <a href="#" setting="search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; <span>Search</span></a>
+        <a href="#" setting="content"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp; <span>Content</span></a>
+        <a href="#" setting="apps"><i class="fa fa-rocket" aria-hidden="true"></i>&nbsp; <span>Applications</span></a>
+        <a href="#" setting="privacy"><i class="fa fa-user-secret" aria-hidden="true"></i>&nbsp; <span>Privacy</span></a>
+        <a href="#" setting="security"><i class="fa fa-lock" aria-hidden="true"></i>&nbsp; <span>Security</span></a>
+        <a href="#" setting="sync"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp; <span>Sync</span></a>
+        <a href="#" setting="advanced"><i class="fa fa-gear" aria-hidden="true"></i>&nbsp; <span>Advanced</span></a>
+    </div>
+    <div class="views col">
+        <div class="view active" id="general">
+            <h1 class="title">General</h1>
+            <div class="startup subsetting">
+                <h4>Startup</h4>
+                <p class="isDefaultBrowser">MyBrowser is currently not your default browser || MyBrowser is your default browser</p>
+                <a class="isDefaultBrowser btn switch" change="p.isDefaultBrowser" active>Set as default browser || Stop being default browser</a>
+                <br>
+                <br>
+                <p>
+                    On startup: &nbsp;
+                    <select>
+                        <option>Show blank page</option>
+                        <option>Show home page</option>
+                        <option>Resume from you left off</option>
+                    </select>
+                </p>
+                <p>
+                    Homepage: &nbsp;
+                    <input type="text" />
+                </p>
+            </div>
+            <div class="downloads subsetting">
+                <h4>Downloads</h4>
+                <p>
+                    <input type="radio" rel="downloads" id="downloadsAsk" checked />
+                    <label for="downloadsAsk">Always ask you where to download</label>
+                </p>
+                <p>
+                    <input type="radio" rel="downloads" id="downloadsNoAsk" />
+                    <label for="downloadsNoAsk">Automatically save to: &nbsp;</label>
+                    <select class="btn">
+                        <option>Downloads</option>
+                    </select>
+                    <a class="btn select">Browse</a>
+                </p>
+            </div>
+            <div class="tabs subsetting">
+                <h4>Tabs</h4>
+                <p>
+                    <input type="checkbox" id="cycleUsing" />
+                    <label for="cycleUsing">Cycle through tabs using Ctrl+Tab</label>
+                </p>
+                <p>
+                    <input type="checkbox" id="selectAfterOpen" checked />
+                    <label for="selectAfterOpen">Select tab after opening it using a link</label>
+                </p>
+            </div>
+        </div>
+        <div class="view" id="search">
+            <h1 class="title">Search</h1>
+            <div class="defaultSearchEngine subsetting">
+                <h4>Default search engine</h4>
+                <p style="margin-bottom: .5rem;">Choose your default search engine.</p>
+                <select class="searchEngine">
+                    <option>Google</option>
+                    <option>DuckDuckGo</option>
+                    <option>Add new...</option>
+                </select>
+                <p style="margin: .5rem 0;">
+                    <input type="checkbox" id="searchSuggestions" checked>
+                    <label for="searchSuggestions">Show search suggestions</label>
+                </p>
+            </div>
+        </div>
+        <div class="view" id="content">
+            <h1 class="title">Content</h1>
+            <div class="notifications subsetting">
+                <h4>Notifications</h4>
+                <p style="margin-bottom: .5rem;">
+                    Choose which sites are allowed to send you notifications
+                    <a class="btn">Choose...</a>
+                </p>
+            </div>
+            <div class="popups subsetting">
+                <h4>Popups</h4>
+                <p style="margin-bottom: .5rem;">
+                    <a class="btn switch isBlockingPopups" active>Block popups || Stop blocking popups</a>
+                </p>
+                <p style="margin-bottom: .5rem;">
+                    Choose which sites are allowed to pop-up windows
+                    <a class="btn">Choose...</a>
+                </p>
+            </div>
+        </div>
+        <div class="view" id="apps">
+            <h1 class="title">Applications</h1>
+            <div class="defaultApps subsetting">
+                <h4>Default applications</h4>
+                <input type="text" placeholder="Search" search="list .apps">
+                <div class="apps list">
+                    <div class="top">
+                        <a>File extension</a>
+                        <a>Action</a>
+                    </div>
+                    <div class="body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view" id="privacy">
+            <h1 class="title">Privacy</h1>
+            <div class="defaultSearchEngine subsetting">
+                <h4>Default search engine</h4>
+                <select class="searchEngine">
+                    <option>Google</option>
+                    <option>DuckDuckGo</option>
+                </select>
+                <button class="save">Save</button>
+            </div>
+        </div>
+        <div class="view" id="security">
+            <h1 class="title">Security</h1>
+            <div class="defaultSearchEngine subsetting">
+                <h4>Default search engine</h4>
+                <select class="searchEngine">
+                    <option>Google</option>
+                    <option>DuckDuckGo</option>
+                </select>
+                <button class="save">Save</button>
+            </div>
+        </div>
+        <div class="view" id="sync">
+            <h1 class="title">Sync</h1>
+            <div class="defaultSearchEngine subsetting">
+                <h4>Default search engine</h4>
+                <select class="searchEngine">
+                    <option>Google</option>
+                    <option>DuckDuckGo</option>
+                </select>
+                <button class="save">Save</button>
+            </div>
+        </div>
+        <div class="view" id="advanced">
+            <h1 class="title">Advanced</h1>
+            <div class="defaultSearchEngine subsetting">
+                <h4>Default search engine</h4>
+                <select class="searchEngine">
+                    <option>Google</option>
+                    <option>DuckDuckGo</option>
+                </select>
+                <button class="save">Save</button>
+            </div>
+        </div>
+        <div class="searchEngine modal">
+            <div class="modal-content">
+                <h1>Add a new search engine</h1>
+                <p>
+                    <label>Name:</label>
+                    <input type="text" name="name" placeholder="e.g. Google">
+                </p>
+                <p>
+                    <label>Homepage:</label>
+                    <input type="text" name="home" placeholder="e.g. https://www.google.com">
+                </p>
+                <p>
+                    <label>Search url:</label>
+                    <input type="text" name="searchUrl" placeholder="e.g. https://www.google.com?q=">
+                </p>
+                <p>
+                    <a class="btn">Add</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="mybrowser://js/plugins/jquery.min.js"></script>
+    <script>
+        $('document').ready(() => {
+            const mq = window.matchMedia('(max-width: 792px)');
+
+            if (mq.matches) {
+                document.querySelectorAll('.sidebar a').forEach((item) => {
+                    item.innerHTML = item.innerHTML.replace(/&nbsp;/g, '');
+                });
+            }
+
+            window.addEventListener('resize', () => {
+                if (mq.matches) {
+                    document.querySelectorAll('.sidebar a').forEach((item) => {
+                        item.innerHTML = item.innerHTML.replace(/&nbsp;/g, '');
+                    });
+                } else {
+                    document.querySelectorAll('.sidebar a').forEach((item) => {
+                        if (!item.innerHTML.includes('&nbsp;')) {
+                            const nbsp = document.createTextNode(String.fromCharCode(160));
+                            item.insertBefore(nbsp, item.querySelector('span'))
+                        }
+                    });
+                }
+            });
+
+            document.querySelectorAll('.sidebar a').forEach((item) => {
+                $(item).on('click', (e) => {
+                    e.preventDefault();
+
+                    const id = item.getAttribute('setting');
+                    $('.sidebar a.active').removeClass('active');
+                    $(`.sidebar a[setting="${id}"]`).addClass('active');
+                    $(`.views .view.active`).removeClass('active');
+                    $(`.views .view#${id}`).addClass('active');
+                });
+            });
+
+            // document.querySelector('a.isDefaultBrowser.btn').addEventListener('click', e => {
+            //     if (!e.target.classList.contains('active')) {
+            //         $('p.isDefaultBrowser').fadeOut(300, () => {
+            //             $('p.isDefaultBrowser').text('MyBrowser is your default browser').fadeIn(300);
+            //         });
+            //     } else {
+            //         $('p.isDefaultBrowser').fadeOut(300, () => {
+            //             $('p.isDefaultBrowser').text('MyBrowser is currently not your default browser').fadeIn(300);
+            //         });
+            //     }
+            // });
+
+            document.querySelectorAll('.btn.switch').forEach(item => {
+                if (item.getAttribute('active') !== undefined) {
+                    item.classList.add('active');
+                }
+                if (!item.querySelector('span')) {
+                    item.innerHTML = `<span>${item.text}</span>`;
+                }
+                switchTextBtn(item)
+                item.addEventListener('click', e => {
+                    const target = e.target;
+
+                    target.classList.toggle('active');
+                });
+            });
+
+            document.querySelectorAll('.btn.switch span').forEach(item => {
+                item.addEventListener('click', e => {
+                    const target = e.target.parentElement;
+                    target.classList.toggle('active');
+                });
+            });
+
+
+            // switchTextBtn(document.querySelector('.btn.switch.isBlockingPopups'))
+
+            $('input[type="checkbox"]').each(function () {
+                const checkbox = `<span class="checkbox"><span class="tick"></span></span>`;
+                $(this).after(checkbox);
+                $(this).css('display', 'none');
+
+                if ($(this).attr('checked') !== undefined) {
+                    $(this).next().addClass('checked');
+                }
+
+                $(this).next().next('label').addClass('clickable');
+
+                $(this).next().next('label').on('click', e => {
+                    $(e.target).prev().toggleClass('checked');
+                });
+
+                $(this).next('.checkbox').on('click', e => {
+                    $(e.target).toggleClass('checked');
+                });
+
+                $(this).next('.checkbox').children('.tick').on('click', e => {
+                    $(e.target).parent().toggleClass('checked');
+                });
+            });
+
+            $('input[type="radio"]').each(function () {
+                const radiobtn = `<span class="radiobtn"><span class="fill"></span></span>`;
+                const rel = $(this).attr('rel');
+
+                $(this).after(radiobtn);
+                $(this).next('.radiobtn').attr('rel', rel);
+                $(this).css('display', 'none');
+
+                $(this).next().next('label').addClass('clickable');
+
+                if ($(this).attr('checked') !== undefined) {
+                    $(this).next().addClass('checked');
+                    $(this).next().next('label').removeClass('clickable');
+                }
+
+                $(this).next().next('label').on('click', e => {
+                    $(`.${rel}`).find('.radiobtn.checked').next().addClass('clickable');
+                    $(`.${rel}`).find('.radiobtn.checked').removeClass('checked');
+                    $(e.target).prev().addClass('checked');
+                    $(e.target).removeClass('clickable')
+                });
+
+                $(this).next('.radiobtn').on('click', e => {
+                    $(`.${rel}`).find('.radiobtn.checked').next().addClass('clickable');
+                    $(`.${rel}`).find('.radiobtn.checked').removeClass('checked');
+                    $(e.target).addClass('checked');
+                    $(e.target).next().removeClass('clickable')
+                });
+            });
+
+            $('select').each(function () {
+                var $this = $(this),
+                    numberOfOptions = $(this).children('option').length;
+                let lengths = [];
+                const classes = this.classList;
+
+                if (classes.length > 1) {
+                    $this.wrap(`<div class="select ${classes.value}"></div>`);
+                } else if (classes !== undefined) {
+                    $this.wrap(`<div class="select ${classes.value}"></div>`);
+                } else {
+                    $this.wrap(`<div class="select"></div>`);
+                }
+
+                $this.addClass('s-hidden');
+
+                $this.after('<div class="styledSelect"><span></span></div>');
+
+                var $styledSelect = $this.next('div.styledSelect');
+
+                $styledSelect.children('span').text($this.children('option').eq(0).text());
+
+                var $list = $('<ul />', {
+                    'class': 'options'
+                }).insertAfter($styledSelect);
+
+                for (var i = 0; i < numberOfOptions; i++) {
+                    $('<li />', {
+                        text: $this.children('option').eq(i).text(),
+                        rel: $this.children('option').eq(i).val()
+                    }).appendTo($list);
+
+                    lengths.push($this.children('option').eq(i).text().length);
+
+                    if ((numberOfOptions - 1) === i) {
+                        let lastLength = 0;
+                        let itemIndex;
+                        lengths.forEach((v, i) => {
+                            if (v > i) {
+                                lastLength = v;
+                                itemIndex = i;
+                            }
+                        });
+                        const item = $this.children('option').eq(itemIndex);
+                        $this.value = item.text();
+                    }
+                }
+
+                var $listItems = $list.children('li');
+
+                $styledSelect.click(function (e) {
+                    e.stopPropagation();
+                    $('div.styledSelect.active').each(function () {
+                        $(this).removeClass('active').next('ul.options').hide();
+                    });
+                    $(this).toggleClass('active').next('ul.options').toggle();
+                });
+
+                $listItems.click(function (e) {
+                    e.stopPropagation();
+                    $styledSelect.children('span').text($(this).text()).removeClass('active');
+                    $this.val($(this).attr('rel'));
+                    $list.hide();
+
+                    if ($(this).text() === 'Add new...') {
+                        popupModal('searchEngine', () => {
+                            $styledSelect.find('span').text($this.children('option').eq(0).text());
+                        });
+                    }
+                });
+
+                $(document).click(function () {
+                    $styledSelect.removeClass('active');
+                    $list.hide();
+                });
+
+            });
+        });
+
+        function switchTextBtn(btn) {
+            const firstText = btn.querySelector('span').innerHTML.split(' || ')[0];
+            const secondText = btn.querySelector('span').innerHTML.split(' || ')[1];
+
+            if (btn.classList.contains('active')) {
+                btn.querySelector('span').innerHTML = secondText;
+            }
+            btn.addEventListener('click', e => {
+                const target = e.target;
+                const span = target.querySelector('span');
+
+                if (target.classList.contains('active')) {
+                    $(span).fadeOut(300, () => {
+                        $(span).text(firstText).fadeIn(300)
+                    });
+                } else {
+                    $(span).fadeOut(300, () => {
+                        $(span).text(secondText).fadeIn(300)
+                    });
+                }
+            });
+
+            btn.querySelector('span').addEventListener('click', e => {
+                const target = e.target.parentElement;
+                const span = target.querySelector('span');
+
+                if (target.classList.contains('active')) {
+                    $(span).fadeOut(300, () => {
+                        $(span).text(firstText).fadeIn(300)
+                    });
+                } else {
+                    $(span).fadeOut(300, () => {
+                        $(span).text(secondText).fadeIn(300)
+                    });
+                }
+            });
+
+            if (btn.hasAttribute('change')) {
+                const text = btn.getAttribute('change');
+                const firstText = $(text).html().split(' || ')[0];
+                const secondText = $(text).html().split(' || ')[1];
+
+                if (btn.hasAttribute('active')) {
+                    $(text).html(secondText);
+                } else {
+                    $(text).html(firstText);
+                }
+
+                btn.addEventListener('click', e => {
+                    const target = e.target;
+
+                    if (target.classList.contains('active')) {
+                        $(text).fadeOut(300, () => {
+                            $(text).text(secondText).fadeIn(300);
+                        });
+                    } else {
+                        $(text).fadeOut(300, () => {
+                            $(text).text(firstText).fadeIn(300);
+                        });
+                    }
+                });
+
+                btn.querySelector('span').addEventListener('click', e => {
+                    const target = e.target.parentElement;
+
+                    if (target.classList.contains('active')) {
+                        $(text).fadeOut(300, () => {
+                            $(text).text(secondText).fadeIn(300);
+                        });
+                    } else {
+                        $(text).fadeOut(300, () => {
+                            $(text).text(firstText).fadeIn(300);
+                        });
+                    }
+                });
+            }
+        }
+
+        function popupModal(modal, callback = () => { }) {
+            $(`.${modal}.modal`).show().animate({ opacity: 1 }, 300);
+            $(`.${modal}.modal`).on('click', e => {
+                if (e.target === document.querySelector(`.${modal}.modal`)) {
+                    $(`.${modal}.modal`).animate({ opacity: 0 }, 300, () => {
+                        $(`.${modal}.modal`).hide();
+                        callback();
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

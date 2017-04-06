@@ -54,6 +54,7 @@ input,
     border-top-right-radius: .5rem;
     border-top-left-radius: .5rem;
     transition: all .1s;
+    cursor: pointer;
 }
 
 li.nav-item:not(.active):hover {
@@ -85,6 +86,7 @@ li.nav-item:not(.active):hover {
     background: #f5f5f5;
     border-color: #ddd #ddd #f5f5f5;
     z-index: 5;
+    cursor: default;
 }
 
 .topbar .tabs li.active:before {
@@ -105,6 +107,10 @@ li.nav-item:not(.active):hover {
 
 .topbar .tabs li:last-of-type {
     border: 1px solid transparent;
+}
+
+.topbar .tabs li a.nav-link.audioPlaying {
+    border-width: .8rem 4rem .5rem 1rem;
 }
 
 .topbar .tabs li span {
@@ -148,7 +154,8 @@ li.nav-item:not(.active):hover a.tab-close {
     display: block;
 }
 
-.topbar .tabs li a.tab-close {
+.topbar .tabs li a.tab-close,
+.topbar .tabs li a.audio {
     display: none;
     border: 1px solid transparent;
     border-radius: 50%;
@@ -163,11 +170,25 @@ li.nav-item:not(.active):hover a.tab-close {
     cursor: pointer;
 }
 
+.topbar .tabs li a.audio {
+    right: 2.5rem;
+    color: #000;
+}
+
+.topbar .tabs li a.audio i {
+    height: 1.4rem;
+    width: 1.4rem;
+    left: .25rem;
+    bottom: -.25rem;
+    position: absolute;
+}
+
 .topbar .tabs li a.tab-close:hover {
     background: #e25c4b;
 }
 
-.topbar .tabs li a.tab-close i {
+.topbar .tabs li a.tab-close i,
+.topbar.tabs li a.audio i {
     height: 1.4rem;
     width: 1.4rem;
     left: .25rem;
@@ -442,6 +463,10 @@ li.nav-item:not(.active):hover a.tab-close {
     cursor: pointer;
 }
 
+.bottombar .links .link a img {
+    height: 1.4rem;
+}
+
 .bottombar .links .fa {
     vertical-align: middle;
     color: #666;
@@ -484,6 +509,10 @@ li.nav-item:not(.active):hover a.tab-close {
     border-width: 10px;
     border-style: solid;
     border-color: transparent transparent #fff transparent;
+}
+
+.bottombar .links div.mybrowser.popup {
+    left: -262%;
 }
 
 .bottombar .links div.download-manager.hasItems {
@@ -614,6 +643,10 @@ li.nav-item:not(.active):hover a.tab-close {
 
 .pages .page.active {
     display: flex;
+}
+
+.pages webview.error {
+    display: none;
 }
 
 .linkHint {

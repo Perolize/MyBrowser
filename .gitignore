@@ -1,5 +1,6 @@
 node_modules
 dist
 build
-img/Logo (Subjected to be changed).psd
-src/img/Logo (Subjected to be changed).psd
+img/*.psd
+img/icons/*
+src/img/*.psd

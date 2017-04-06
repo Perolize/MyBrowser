@@ -1,6 +1,6 @@
 {
   "name": "mybrowser",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A fully customizable web browser that really was made for you",
   "main": "./dist/main.js",
   "scripts": {
@@ -8,12 +8,16 @@
     "start": "npm run movesssets && concurrently \"npm run build:watch\" \"electron .\" \"npm run watchassets\" \"npm run watchassets2\" ",
     "movesssets": "cpx \"src/*.{html,css}\" dist && cpx \"src/**/*.{html,css}\" dist &&  cpx \"src/**/*.{js,js.map}\" dist",
     "watchassets": "onchange \"src/**/*.css\" \"src/**/*.html\" -e \"dist/*\" -v -- cpx \"src/**/*.{html,css}\" dist",
-    "watchassets2": "onchange \"src/*.css\" \"src/*.html\" -e \"dist/*\" -v -- cpx \"src/*.{html,css}\" dist"
+    "watchassets2": "onchange \"src/*.css\" \"src/*.html\" -e \"dist/*\" -v -- cpx \"src/*.{html,css}\" dist",
+    "pack:osx": "electron-packager . --out=build --platform=darwin --arch=x64 --icon=img/icons/icon.icns --app-copyright=\"Copyright © 2017 Myputer, Inc. All rights reserved\" --build-version=0.0.6 --asar --overwrite",
+    "pack:win32": "electron-packager . --out=build --platform=win32 --arch=ia32 --app-version=0.0.6 --icon=\"img/icons/win.ico\" --win32metadata.ProductName=MyBrowser --win32metadata.FileDescription=\"Myputer Browser\" --win32metadata.CompanyName=Myputer --app-copyright=\"Copyright © 2017 Myputer, Inc. All rights reserved\" --win32metadata.OriginalFilename=\"MyBrowser.exe\" --build-version=0.0.6 --asar --overwrite",
+    "pack:win64": "electron-packager . --out=build --platform=win32 --arch=x64 --app-version=0.0.6 --icon=\"img/icons/win.ico\" --win32metadata.ProductName=MyBrowser --win32metadata.FileDescription=\"Myputer Browser\" --win32metadata.CompanyName=Myputer --app-copyright=\"Copyright © 2017 Myputer, Inc. All rights reserved\" --win32metadata.OriginalFilename=\"MyBrowser.exe\" --build-version=0.0.6 --asar  --overwrite",
+    "build": "npm run pack:osx && npm run pack:win32 && npm run pack:win64"
   },
   "build": {
-    "appId": "",
+    "appId": "com.myputer.browser",
     "mac": {
-      "category": ""
+      "category": "public.app-category.utilities"
     },
     "protocols": [
       {
@@ -34,12 +38,13 @@
     "Shopping"
   ],
   "author": "Myputer Inc.",
-  "license": "MPL 2.0",
+  "license": "ASL 2.0",
   "productName": "MyBrowser",
-  "electronVersion": "1.4.12",
+  "electronVersion": "1.6.4",
   "devDependencies": {
     "@types/jquery": "^2.0.41",
     "concurrently": "^3.1.0",
+    "electron": "^1.6.4",
     "electron-connect": "^0.6.1",
     "electron-packager": "^8.6.0",
     "gulp": "^3.9.1",
@@ -55,8 +60,13 @@
     "del": "^2.2.2",
     "dragula": "^3.7.2",
     "electron-context-menu": "^0.8.0",
+    "electron-notification-shim": "^1.1.0",
+    "electron-notify": "^0.1.0",
+    "electron-safe-ipc": "^0.6.1",
+    "electron-windows-notifications": "^1.1.11",
     "is-url": "^1.2.2",
     "jquery": "^3.1.1",
+    "node-notifier": "^5.1.2",
     "normalize-url": "^1.9.1",
     "normalize.css": "^5.0.0"
   }

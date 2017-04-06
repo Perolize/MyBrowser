@@ -10,7 +10,13 @@
   <link rel="stylesheet" href="./css/bootstrap-grid.min.css">
   <link rel="stylesheet" href="./css/font-awesome.min.css">
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./designs/default/default.css">
 
+  <script src="https://twemoji.maxcdn.com/2/twemoji.min.js?2.2.3"></script>
+  <script src="mybrowser://js/plugins/jquery.min.js" async></script>
+  <script src="mybrowser://js/plugins/mousetrap.min.js"></script>
+  <script src="mybrowser://js/plugins/awesomplete.min.js"></script>
+  <script src="mybrowser://js/plugins/xregexp.js"></script>
   <script>
     window.$ = window.jQuery = require('jquery');
   </script>
@@ -22,8 +28,9 @@
       <ul class="tabs">
         <li class="nav-item active" data-id="0">
           <span class="fa fa-spinner"></span>
-          <img class="favicon" />
+          <img class="favicon" draggable="false" />
           <a class="nav-link">Blank</a>
+          <a class="audio"><i class="fa fa-volume-up"></i></a>
           <a class="tab-close"><i class="fa fa-times"></i></a>
         </li>
         <a class="new-tab"><i class="fa fa-plus"></i></a>
@@ -52,12 +59,20 @@
         <input class="info fa" type="button" value="&#xf05a;" />
         <input class="secure fa" type="button" value="&#xf023;" />
         <input class="mybrowser" type="button" value="MyBrowser">
-        <div class="url" type="text" contenteditable="true"></div>
+        <div class="url awesomplete" type="text" contenteditable="true" data-list="#autocomplete"></div>
+        <!--<ul id="autocomplete"></ul>-->
         <input class="refresh fa" type="button" value="&#xf021;" />
       </div>
       <ul class="links">
         <li class="link">
           <a><i class="fa fa-star-o"></i></a>
+        </li>
+        <li class="link popup">
+          <a><img src="mybrowser://img/logo-2.png"></img></a>
+          <div class="mybrowser popup">
+            <p class="no-downloads">No avaliable settings</p>
+            <button class="big btn">Show all settings</button>
+          </div>
         </li>
         <ul class="extensions">
           <li class="link popup">
@@ -84,11 +99,12 @@
     <input type="button" class="next btn fa" value="">
   </div>
   <div class="pages">
-    <webview class="page active" src="mybrowser://blank" data-id="0" nodeintegration></webview>
+    <webview class="page active" src="mybrowser://blank" data-id="0" preload="./js/pages/all.js"></webview>
   </div>
   <p class="linkHint" style="display: none;"></p>
 </body>
 
+<script src="mybrowser://js/plugins/jquery-ui.min.js"></script>
 <script>
   // You can also require other files to run in this process
   require('./renderer')
@@ -97,6 +113,112 @@
   require('./js/main.js')
   require('./js/navbar.js')
   require('./js/shortcuts.js')
+  require('./designs/default/default')
+
+  require('electron-notification-shim')();
+
+  // const { ipcRenderer, remote } = require('electron');
+  // const selectedSearchEngine = require('./settings').selectedSearchEngine;
+
+  // function autocomplete() {
+  //   const searchBar = document.querySelector('.url');
+  //   const awesomplete = new Awesomplete(searchBar);
+
+  //   const html = document.querySelector('#autocomplete').innerHTML;
+  //   document.querySelector('#autocomplete').remove();
+  //   const ul = document.createElement('ul');
+  //   ul.id = 'autocomplete';
+  //   ul.innerHTML = html;
+  //   document.querySelector('div.awesomplete:not(.url)').appendChild(ul);
+
+  //   const list = document.querySelector('#autocomplete');
+  //   list.setAttribute('hidden', '');
+
+  //   awesomplete.minChars = 1;
+  //   awesomplete.ul = list;
+  //   awesomplete.list = list;
+  //   awesomplete.sort = false;
+
+  //   searchBar.addEventListener('input', () => {
+  //     selectedSearchEngine.getSuggestions(searchBar.value);
+  //     document.querySelector('#autocomplete').innerHTML = '';
+
+  //     ipcRenderer.once('getSuggestions', (e, msg) => {
+  //       suggestions = msg;
+  //       console.log(suggestions);
+  //       suggestions.forEach((item) => {
+  //         const li = document.createElement('li');
+  //         li.innerHTML = item;
+  //         document.querySelector('#autocomplete').appendChild(li);
+  //       });
+  //     });
+
+  //     $('.url').parent().promise()
+  //       .then(() => {
+  //         awesomplete.list = list;
+  //         list.removeAttribute('hidden');
+  //       })
+  //       .then(() => {
+  //         if (searchBar.textContent === '') {
+  //           removeClassHebrew();
+  //         }
+  //       });
+  //   });
+
+  //   list.querySelectorAll('li').forEach(item => {
+  //     item.addEventListener('mouseover', () => {
+  //       list.querySelectorAll('li').forEach(item => item.removeAttribute('aria-selected'))
+  //     });
+  //   });
+
+  //   searchBar.addEventListener('awesomplete-highlight', e => {
+  //     const text = document.querySelector('li[aria-selected="true"]').textContent
+  //     searchBar.textContent = text;
+  //   });
+
+  //   searchBar.addEventListener('awesomplete-select', e => {
+  //     const text = document.querySelector('li[aria-selected="true"]').textContent
+
+  //     e.preventDefault();
+  //     searchBar.textContent = text;
+  //   });
+
+  //   function addClassHebrew() {
+  //     $('.awesomplete').each(function () {
+  //       if (isHebrew($(this).text()))
+  //         $(this).addClass('hebrew');
+  //     });
+  //   }
+
+  //   function removeClassHebrew() {
+  //     $('.awesomplete').each(function () {
+  //       if (!isHebrew($(this).text()))
+  //         $(this).removeClass('hebrew');
+  //     });
+  //   }
+
+  //   function isHebrew(str) {
+  //     var isHebrew = XRegExp('[\\p{Hebrew}]');
+  //     var partHebrew = 0;
+  //     var rtlIndex = 0;
+  //     var isRTL = false;
+
+  //     for (i = 0; i < str.length; i++) {
+  //       if (isHebrew.test(str[i]))
+  //         partHebrew++;
+  //     }
+  //     rtlIndex = partHebrew;
+  //     if (rtlIndex > .5) {
+  //       isRTL = true;
+  //     }
+
+  //     return isRTL;
+  //   }
+
+
+  //   $('.url').focus(addClassHebrew).on('input', (addClassHebrew)).on('input', (addClassHebrew));
+  //   $('.url').focus(removeClassHebrew).on('input', (removeClassHebrew)).on('input', (removeClassHebrew));
+  // }
 
 </script>
 

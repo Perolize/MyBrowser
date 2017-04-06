@@ -75,33 +75,38 @@ document.querySelector(".win-cls").addEventListener("click", () => {
 
 $('.tabs .nav-item').on('click', onClickTab);
 
+$('.nav-item .audio').on('click', onClickAudio);
+
 $(".nav-item .tab-close").on("click", onClickRemoveTab);
 
-document.querySelector(".new-tab").addEventListener("click", () => {
-    const id = parseInt($('.new-tab').prev().attr('data-id')) + 1;
-    const tabLI = `<li class="nav-item active" data-id="${id}"><span class="fa fa-spinner"></span><img class="favicon" /><a class="nav-link">Blank</a><a class="tab-close"><i class="fa fa-times"></i></a></li>`;
-    const page = `<webview class="page active" src="mybrowser://blank" data-id="${id}"></webview>`
+document.querySelector(".new-tab").addEventListener("click", e => {
+    if (!e.defaultPrevented) {
+        const id = parseInt($('.new-tab').prev().attr('data-id')) + 1;
+        const tabLI = `<li class="nav-item active" data-id="${id}"><span class="fa fa-spinner"></span><img class="favicon" draggable="false" /><a class="nav-link">Blank</a><a class="audio"><i class="fa fa-volume-up"></i></a><a class="tab-close"><i class="fa fa-times"></i></a></li>`;
+        const page = `<webview class="page active" src="mybrowser://blank" data-id="${id}"></webview>`
 
-    const wv = document.querySelector('webview.active');
+        const wv = document.querySelector('webview.active');
 
-    $('.tabs .nav-item').removeClass('active');
-    $(tabLI).insertBefore('.new-tab');
-    $('.page').removeClass('active');
-    $('.pages').append(page);
+        $('.tabs .nav-item').removeClass('active');
+        $(tabLI).insertBefore('.new-tab');
+        $('.page').removeClass('active');
+        $('.pages').append(page);
 
-    $('.tabs .nav-item').removeClass('before');
-    $('.tabs .nav-item').removeClass('after');
+        $('.tabs .nav-item').removeClass('before');
+        $('.tabs .nav-item').removeClass('after');
 
-    $('.tabs .nav-item.active').prev().addClass('before');
-    if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
-        $('.tabs .nav-item.active').next().addClass('after');
+        $('.tabs .nav-item.active').prev().addClass('before');
+        if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
+            $('.tabs .nav-item.active').next().addClass('after');
+        }
+
+        $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
+        $(`.tabs .nav-item[data-id="${id}"] .audio`).on('click', onClickAudio);
+        $(".nav-item .tab-close").on("click", onClickRemoveTab);
+
+        webview.onWebViewCreated(id);
+        webview.render('blank', 'mybrowser://blank');
     }
-
-    $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
-    $(".nav-item .tab-close").on("click", onClickRemoveTab);
-
-    webview.onWebViewCreated(id);
-    webview.render('blank', 'mybrowser://blank');
 });
 
 document.querySelector('.navigation .back').addEventListener('click', () => {
@@ -173,7 +178,7 @@ document.querySelector('.navigation .refresh').addEventListener('click', (e: any
 
 
 export function createNewTab(id: number, url: string = 'mybrowser://blank') {
-    const tabLI = `<li class="nav-item active" data-id="${id}"><span class="fa fa-spinner"></span><img class="favicon" /><a class="nav-link">Blank</a><a class="tab-close"><i class="fa fa-times"></i></a></li>`;
+    const tabLI = `<li class="nav-item active" data-id="${id}"><span class="fa fa-spinner"></span><img class="favicon" draggable="false" /><a class="nav-link">Blank</a><a class="audio"><i class="fa fa-volume-up"></i></a><a class="tab-close"><i class="fa fa-times"></i></a></li>`;
     const page = `<webview class="page active" src="${url}" data-id="${id}"></webview>`
 
     $('.tabs .nav-item').removeClass('active');
@@ -190,6 +195,7 @@ export function createNewTab(id: number, url: string = 'mybrowser://blank') {
     }
 
     $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
+    $(`.tabs .nav-item[data-id="${id}"] .audio`).on('click', onClickAudio);
     $(".nav-item .tab-close").on("click", onClickRemoveTab);
 
     webview.onWebViewCreated(id);
@@ -226,66 +232,111 @@ export function onClickTab() {
     }
 }
 
+export function onClickAudio(e: any) {
+    let id;
+    if (parseInt(e.target.parentElement.parentElement.getAttribute('data-id')) !== undefined) {
+        id = parseInt(e.target.parentElement.parentElement.getAttribute('data-id'));
+    } else {
+        console.log(e.target)
+        id = parseInt(e.target.parentElement.parentElement.parentElement.getAttribute('data-id'));
+    }
+    const page = document.querySelector(`.pages .page[data-id="${id}"]`) as any;
+    const target = document.querySelector(`.tabs li[data-id="${id}"] .audio i`) as HTMLElement;
+    console.log(target)
+
+    target.parentElement.classList.toggle('muted');
+    target.classList.toggle('fa-volume-up');
+    target.classList.toggle('fa-volume-off');
+    page.setAudioMuted(!page.isAudioMuted());
+}
+
 export function onClickRemoveTab(e: Event) {
     const target = e.target as HTMLElement;
     const id = parseInt(target.parentElement.parentElement.getAttribute('data-id'));
-    let didCreate = $(`.after`).length === 0 && $(`.before`).length === 0;
 
-    $(`[data-id="${id}"]`).remove();
+    let before: any;
+    let after: any;
+    let didCreate: any;
+    let activeId: any;
 
-    if ($(`.before`).length > 0) {
-        const newId = $(`.before`).attr('data-id');
-        $(`[data-id="${newId}"]`).addClass('active').promise()
-            .then(() => {
-                $('.tabs .nav-item').removeClass('before');
-                $('.tabs .nav-item').removeClass('after');
-            })
-            .then(() => {
-                $('.tabs .nav-item.active').prev().addClass('before');
-                if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
-                    $('.tabs .nav-item.active').next().addClass('after');
-                }
-            })
-            // .then(() => {
-            //     $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
-            //     $(".nav-item .tab-close").on("click", onClickRemoveTab);
-            // })
-            .then(() => {
-                webview.setTitle(parseInt(newId));
-                webview.onNavigating(parseInt(newId));
-            });
+    $(`.new-tab`).addClass('lol').removeClass('lol').promise()
+        .then(() => {
+            before = document.querySelector(`li[data-id="${id}"]`).previousElementSibling;
+            after = document.querySelector(`li[data-id="${id}"]`).nextElementSibling;
 
-        return;
-    } else if ($(`.after`).length > 0) {
-        const newId = $(`.after`).attr('data-id');
-        $(`[data-id="${newId}"]`).addClass('active').promise()
-            .then(() => {
-                $('.tabs .nav-item').removeClass('before');
-                $('.tabs .nav-item').removeClass('after');
-            })
-            .then(() => {
-                $('.tabs .nav-item.active').prev().addClass('before');
-                if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
-                    $('.tabs .nav-item.active').next().addClass('after');
-                }
-            })
-            // .then(() => {
-            //     $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
-            //     $(".nav-item .tab-close").on("click", onClickRemoveTab);
-            // })
-            .then(() => {
-                webview.setTitle(parseInt(newId));
-                webview.onNavigating(parseInt(newId));
-            });
+            didCreate = (before === null && after === document.querySelector('.new-tab'));
+        })
+        .then(() => {
+            $(`[data-id="${id}"]`).remove();
+            if ($('.tabs .nav-item.active').length > 0) {
+                activeId = $('.tabs .nav-item.active').attr('data-id');
+            }
+            // $('.tabs .nav-item').removeClass('active');
+        })
+        .then(() => {
+            if (didCreate) {
+                console.log(after === null, before === null)
+                console.log(didCreate)
+                // createNewTab(id);
+                remote.getCurrentWindow().close();
 
-        return;
-    }
+                return;
+            }
 
-    if (didCreate) {
-        createNewTab(id);
+            if (before !== null) {
+                const newId = before.getAttribute('data-id');
+                $(`[data-id="${newId}"]`).addClass('active').promise()
+                    .then(() => {
+                        $('.tabs .nav-item').removeClass('before');
+                        $('.tabs .nav-item').removeClass('after');
+                    })
+                    .then(() => {
+                        $('.tabs .nav-item.active').prev().addClass('before');
+                        if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
+                            $('.tabs .nav-item.active').next().addClass('after');
+                        }
+                    })
+                    // .then(() => {
+                    //     $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
+                    //     $(".nav-item .tab-close").on("click", onClickRemoveTab);
+                    // })
+                    .then(() => {
+                        webview.setTitle(parseInt(newId));
+                        webview.onNavigating(parseInt(newId));
+                    });
 
-        return;
-    }
+                return;
+            } else if (after !== null && before !== document.querySelector('.new-tab')) {
+                const newId = after.getAttribute('data-id');
+                $(`[data-id="${newId}"]`).addClass('active').promise()
+                    .then(() => {
+                        $('.tabs .nav-item').removeClass('before');
+                        $('.tabs .nav-item').removeClass('after');
+                    })
+                    .then(() => {
+                        $('.tabs .nav-item.active').prev().addClass('before');
+                        if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
+                            $('.tabs .nav-item.active').next().addClass('after');
+                        }
+                    })
+                    // .then(() => {
+                    //     $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
+                    //     $(".nav-item .tab-close").on("click", onClickRemoveTab);
+                    // })
+                    .then(() => {
+                        webview.setTitle(parseInt(newId));
+                        webview.onNavigating(parseInt(newId));
+                    });
+
+                return;
+            }
+        })
+        .then(() => {
+            if ($('.tabs .nav-item.active').length > 1) {
+                $(`.tabs .nav-item`).removeClass('active');
+                $(`.tabs .nav-item[data-id="${activeId}"]`).addClass('active');
+            }
+        });
 }
 
 function getURL() {
@@ -320,7 +371,7 @@ export function getSuggestions(name: String, url: any, id: Number = undefined) {
                 .then(response => {
                     return response.json();
                 })
-                .then(results => {
+                .then((results: any) => {
                     results.forEach((v: any, i: any) => {
                         suggestions.push(results[i].phrase);
                     });
@@ -332,7 +383,7 @@ export function getSuggestions(name: String, url: any, id: Number = undefined) {
                 .then(response => {
                     return response.json();
                 })
-                .then(results => {
+                .then((results: any) => {
                     results.forEach((v: any, i: any) => {
                         suggestions.push(results[i].phrase);
                     });
@@ -367,5 +418,6 @@ function searchFor(input: String) {
 
 module.exports.search = search;
 module.exports.onClickTab = onClickTab;
+module.exports.onClickAudio = onClickAudio;
 module.exports.onClickRemoveTab = onClickRemoveTab;
 module.exports.getSuggestions = getSuggestions;

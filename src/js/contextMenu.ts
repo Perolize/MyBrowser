@@ -190,7 +190,7 @@ const appMenu = Menu.buildFromTemplate(appMenuTemplate)
 Menu.setApplicationMenu(appMenu)
 
 export function addMenu(id: Number) {
-  let wv;
+  let wv: any;
   if (id !== undefined) {
     wv = document.querySelector(`.pages webview[data-id="${id}"]`) as any;
   } else {
@@ -207,7 +207,8 @@ export function addMenu(id: Number) {
       linkMenuTemplate: [
         {
           label: 'Open in new tab',
-          click: () => { remote.getCurrentWindow().webContents.send('openInNewTab') },
+          // click: () => { remote.getCurrentWindow().webContents.send('openInNewTab') },/
+          click: () => { triggerEvent(wv, 'new-window', { detail: contextMenuTarget.link }) },
         },
         {
           type: 'separator'
@@ -388,6 +389,17 @@ export function onOpenInNewTab() {
     const target = contextMenuTarget;
     main.createNewTab(id, target.link);
   });
+}
+
+export function triggerEvent(el: any, eventName: any, options: any) {
+  var event;
+  if ((window as any).CustomEvent) {
+    event = new CustomEvent(eventName, options);
+  } else {
+    event = document.createEvent('CustomEvent');
+    event.initCustomEvent(eventName, true, true, options);
+  }
+  el.dispatchEvent(event);
 }
 
 module.exports.addMenu = addMenu;

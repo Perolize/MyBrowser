@@ -5,7 +5,7 @@ class SearchEngine {
         this.name = name;
         this.home = home;
         this.searchUrl = searchUrl;
-        this.suggestionUrl = suggestionUrl;
+        this.suggestionUrl = suggestionUrl || 'https://ac.duckduckgo.com/ac?q=';
     }
 
     search(input: String) {

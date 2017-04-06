@@ -4,6 +4,7 @@ const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 const ipcMain = electron.ipcMain
+const ipcRenderer = electron.ipcRenderer;
 const protocol = electron.protocol
 
 const path = require('path')
@@ -28,6 +29,10 @@ function createWindow() {
       const cssPath = path.normalize(`${__dirname}/${req.url.substr(12)}`);
 
       cb({ path: cssPath })
+    } else if (req.url.substr(12).startsWith('fonts')) {
+      const fontsPath = path.normalize(`${__dirname}/${req.url.substr(12)}`);
+
+      cb({ path: fontsPath })
     } else if (req.url.substr(12).startsWith('img')) {
       const imgPath = path.normalize(`${__dirname}/${req.url.substr(12)}`);
 
@@ -51,6 +56,77 @@ function createWindow() {
     protocol: 'file:',
     slashes: true
   }))
+
+  // ipcMain.on('notification', (e, msg) => {
+  //   var eNotify = require('electron-notify');
+  //   // Change config options
+  //   eNotify.setConfig({
+  //     appIcon: path.join(__dirname, './img/logo.png'),
+  //     displayTime: 6000
+  //   });
+
+  //   eNotify.notify({
+  //     title: 'Title',
+  //     text: 'Some text',
+  //     onClickFunc: e => {
+  //       e.closeNotification();
+  //     }
+  //   });
+  // });
+
+  ipcMain.on('notification-shim', (e, msg) => {
+    console.log(msg)
+    const eNotify = require('electron-notify');
+
+    if (msg.options.icon === undefined || msg.options.icon === '') {
+      msg.options.icon = path.join(__dirname, './img/logo.png');
+    } else {
+      console.log(msg.options.icon === undefined || msg.options.icon === '')
+    }
+    eNotify.setConfig({
+      width: 400,
+      height: 200,
+      defaultStyleContainer: {
+        backgroundColor: '#f0f0f0',
+        overflow: 'hidden',
+        padding: 8,
+        border: '1px solid #CCC',
+        fontFamily: 'Arial',
+        fontSize: 18,
+        position: 'relative',
+        lineHeight: '21px'
+      },
+      appIcon: msg.options.icon,
+      defaultStyleAppIcon: {
+        overflow: 'hidden',
+        float: 'left',
+        height: 175,
+        width: 175,
+        marginRight: 10,
+      },
+      defaultStyleText: {
+        margin: 0,
+        overflow: 'hidden',
+        cursor: 'default'
+      },
+      displayTime: 6000,
+      originUrl: msg.options.originUrl,
+      webviewId: msg.options.webviewId
+    });
+    eNotify.setTemplatePath(path.join(__dirname, './templates/notification.html'));
+
+    msg.originUrl = msg.options.originUrl;
+    msg.webviewId = msg.options.webviewId;
+    msg.text = msg.options.body || 'test';
+    msg.onClickFunc = (event: any) => { e.sender.send('show'); event.closeNotification() };
+    console.log(msg);
+
+    eNotify.notify(msg);
+  });
+  
+  ipcMain.on('open-view', (e, notificationObj) => {
+    ipcRenderer.send('open-view', notificationObj);
+  });
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
