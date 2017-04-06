@@ -23,9 +23,17 @@
 <body>
     <header>
         <div class="container">
-            <img class="logo" src="mybrowser://img/logo.png" draggable="false" />
+            <img class="logo" src="mybrowser://img/logo-4.png" draggable="false" />
             <input class="searchBar awesomeplete" maxlength="256" placeholder="Search " type="search" data-list="#autocomplete" autofocus>
             <ul id="autocomplete"></ul>
+
+            <div class="recentSites">
+                <div class="site"><p class="title">Youtube</p></div>
+                <div class="site"><p class="title">Blank</p></div>
+                <div class="site"><p class="title">Blank</p></div>
+                <div class="site"><p class="title">Blank</p></div>
+                <div class="site"><p class="title">Blank</p></div>
+            </div>
         </div>
     </header>
 
@@ -53,6 +61,7 @@
 
             searchBar.focus();
             setTimeout(() => { searchBar.focus(); }, 1);
+            document.querySelector('div.awesomplete').classList.add('focus');
 
             searchBar.addEventListener('input', () => {
                 awesomplete.suggestions = awesomplete._list
@@ -75,6 +84,22 @@
                 item.addEventListener('mouseover', () => {
                     list.querySelectorAll('li').forEach(item => item.removeAttribute('aria-selected'))
                 });
+            });
+
+            searchBar.addEventListener('focus', e => {
+                const suggestions = document.getElementById('autocomplete');
+                const parent = e.target.parentElement;
+
+                parent.classList.add('focus');
+                suggestions.removeAttribute('hidden');
+            });
+
+            searchBar.addEventListener('blur', e => {
+                const suggestions = document.getElementById('autocomplete');
+                const parent = e.target.parentElement;
+
+                parent.classList.remove('focus');
+                suggestions.setAttribute('hidden', '');
             });
 
             searchBar.addEventListener('awesomplete-highlight', e => {

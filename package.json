@@ -59,11 +59,8 @@
   "dependencies": {
     "del": "^2.2.2",
     "dragula": "^3.7.2",
-    "electron-context-menu": "^0.8.0",
     "electron-notification-shim": "^1.1.0",
     "electron-notify": "^0.1.0",
-    "electron-safe-ipc": "^0.6.1",
-    "electron-windows-notifications": "^1.1.11",
     "is-url": "^1.2.2",
     "jquery": "^3.1.1",
     "node-notifier": "^5.1.2",

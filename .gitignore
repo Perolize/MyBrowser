@@ -1,6 +1,7 @@
+.vscode
 node_modules
 dist
 build
-img/*.psd
-img/icons/*
+img
+src/img/icons/*
 src/img/*.psd

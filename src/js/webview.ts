@@ -255,10 +255,7 @@ export function checkURL(url: string, id: Number = undefined) {
     }
 
     if (url.startsWith('mybrowser://')) {
-        wv.setAttribute('nodeintegration', '');
         render(url.substr(12), url);
-    } else {
-        wv.removeAttribute('nodeintegration');
     }
 }
 
@@ -348,7 +345,6 @@ export function render(page: string, url: string, code: number = 200, desc: stri
     }
 
     wv.setAttribute('preload', `./js/pages/all.js`);
-    // wv.setAttribute('nodeintegration', '')
 
     wv.addEventListener('dom-ready', () => {
         // wv.loadURL(`mybrowser://${page}`)
