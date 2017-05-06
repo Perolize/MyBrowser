@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>MyBrowser</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="./css/bootstrap-reboot.min.css">
+  <link rel="stylesheet" href="./css/bootstrap-grid.min.css">
+  <link rel="stylesheet" href="mybrowser://js/plugins/awesomplete.css" />
+  <link rel="stylesheet" href="./css/font-awesome.min.css">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./designs/default/default.css">
+  <link rel="stylesheet" href="./designs/default/default_small.css">
+  <link rel="stylesheet" href="./designs/modern/modern.css">
+
+  <script src="https://twemoji.maxcdn.com/2/twemoji.min.js?2.2.3"></script>
+  <script src="mybrowser://js/plugins/jquery.min.js" async></script>
+  <script src="mybrowser://js/plugins/mousetrap.min.js"></script>
+  <script src="mybrowser://js/plugins/awesomplete.min.js"></script>
+  <script src="mybrowser://js/plugins/xregexp.js"></script>
+
+  <script src="mybrowser://js/plugins/webcomponentsjs/webcomponents-loader.js"></script>
+
+  <script>
+    window.$ = window.jQuery = require('jquery');
+  </script>
+
+  <link rel="import" href="./custom_elements/win-controls.html">
+</head>
+
+<body>
+
+  <div class="navbar">
+    <div class="topbar">
+      <ul class="tabs">
+        <li class="nav-item active" data-id="0">
+          <span class="fa fa-spinner"></span>
+          <img class="favicon" draggable="false" />
+          <a class="nav-link">Blank</a>
+          <a class="audio"><i class="fa fa-volume-up"></i></a>
+          <a class="tab-close"><i class="fa fa-times"></i></a>
+        </li>
+        <a class="new-tab"><i class="fa fa-plus"></i></a>
+      </ul>
+      <win-controls platform="win32"></win-controls>
+    </div>
+    <div class="bottombar">
+      <div class="navigation">
+        <div class="btns">
+          <input class="btn back fa" value="&#xf060;" type="button" />
+          <input class="btn forward fa" value="&#xf061;" type="button" />
+        </div>
+        <input class="info fa" type="button" value="&#xf05a;" />
+        <input class="secure fa" type="button" value="&#xf023;" />
+        <input class="mybrowser" type="button" value="MyBrowser">
+        <div class="url" type="text" contenteditable="true"></div>
+        <ul id="autocomplete" hidden></ul>
+        <input class="refresh fa" type="button" value="&#xf021;" />
+      </div>
+      <ul class="links">
+        <li class="link">
+          <a><i class="fa fa-star-o"></i></a>
+        </li>
+        <li class="link popup">
+          <a><img src="mybrowser://img/logo-2.png"></img>
+          </a>
+          <div class="mybrowser popup">
+            <p class="no-downloads">No avaliable settings</p>
+            <button class="big btn">Show all settings</button>
+          </div>
+        </li>
+        <ul class="extensions">
+          <li class="link popup">
+            <a><i class="fa fa-download"></i></a>
+            <div class="download-manager popup">
+              <p class="no-downloads">No avaliable downloads</p>
+              <button class="big btn">Show all downloads</button>
+            </div>
+          </li>
+          <li class="link">
+            <a><i class="fa fa-home"></i></a>
+          </li>
+        </ul>
+        <li class="settings link">
+          <a><i class="fa fa-bars"></i></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="search" style="display: none">
+    <input class="searchbox" type="text">
+    <span class="matches">No Results</span>
+    <input type="button" class="previous btn fa" value="">
+    <input type="button" class="next btn fa" value="">
+  </div>
+  <div class="pages">
+    <webview class="page active" src="mybrowser://blank" data-id="0" preload="./js/pages/all.js"></webview>
+  </div>
+  <p class="linkHint" style="display: none;"></p>
+</body>
+
+<script src="mybrowser://js/plugins/jquery-ui.min.js"></script>
+<script>
+  // You can also require other files to run in this process
+  require('jquery')
+  require('dragula')
+  require('./js/main.js')
+  require('./js/navbar.js')
+  require('electron-titlebar')
+  require('./js/shortcuts.js')
+  require('./designs/default/default')
+
+  require('./js/notification/notification-handler')();
+
+  const { ipcRenderer, remote } = require('electron');
+  const main = require('./js/main.js')
+  const selectedSearchEngine = require('./settings').selectedSearchEngine;
+  let suggestions;
+  let input;
+
+  const searchBar = document.querySelector('.url');
+  $(searchBar).after('<input class="searchBar autocomplete" data-list="#autocomplete" hidden>');
+  const searchBarInput = document.querySelector('.searchBar.autocomplete');
+  const awesomplete = new Awesomplete(searchBarInput);
+  $(searchBarInput.parentElement).prepend($(searchBar))
+
+  const html = document.querySelector('#autocomplete').innerHTML;
+  document.querySelector('#autocomplete').remove();
+  const ul = document.createElement('ul');
+  ul.id = 'autocomplete';
+  ul.innerHTML = html;
+  document.querySelector('div.awesomplete:not(.url)').appendChild(ul);
+
+  const list = document.querySelector('#autocomplete');
+  list.setAttribute('hidden', '');
+
+  awesomplete.minChars = 1;
+  awesomplete.ul = list;
+  awesomplete.list = list;
+  awesomplete.sort = false;
+
+  document.addEventListener('click', e => {
+    if (e.target !== searchBar.parentElement || !searchBar.parentElement.contains(e.target)) {
+      if (!e.defaultPrevented) {
+        list.setAttribute('hidden', '');
+      }
+    }
+  });
+
+  document.querySelector('.topbar').addEventListener('click', () => {
+    list.setAttribute('hidden', '')
+  });
+
+  searchBar.addEventListener('click', e => {
+    e.preventDefault();
+
+    list.querySelectorAll('li')[0].setAttribute('aria-selected', 'true');
+    list.removeAttribute('hidden');
+  });
+
+  searchBar.addEventListener('input', () => {
+    searchBarInput.value = searchBar.textContent
+    selectedSearchEngine.getSuggestions(searchBar.textContent);
+    document.querySelector('#autocomplete').innerHTML = '';
+
+    main.getSuggestionsMain(selectedSearchEngine.name, `${selectedSearchEngine.suggestionUrl}${searchBar.textContent}`)
+      .then(msg => {
+        suggestions = msg;
+        console.log(suggestions);
+        if (searchBar.textContent !== '') {
+          const li = document.createElement('li');
+          li.innerHTML = searchBar.textContent;
+          li.setAttribute('aria-selected', 'true');
+          list.appendChild(li);
+        }
+
+        setTimeout(() => {
+          suggestions.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = item;
+            list.appendChild(li);
+          });
+
+          $('.url').parent().promise()
+            .then(() => {
+              awesomplete.list = list;
+              list.removeAttribute('hidden');
+            })
+            .then(() => {
+              if (searchBar.textContent === '') {
+                removeClassHebrew();
+              }
+            });
+
+          list.querySelectorAll('li').forEach(item => {
+            item.addEventListener('click', () => {
+              $(searchBar).trigger('awesomplete-select', item);
+              list.removeAttribute('hidden');
+            });
+            item.addEventListener('mouseover', () => {
+              list.querySelectorAll('li').forEach(item => item.removeAttribute('aria-selected'))
+            });
+          });
+        }, 200);
+      });
+  });
+
+  searchBar.addEventListener('keydown', e => {
+    if (e.keyCode === 38) {
+      if (list.querySelector('[aria-selected="true"]')) {
+        const currentItem = list.querySelector('li[aria-selected="true"]');
+        currentItem.setAttribute('aria-selected', 'false');
+        if (currentItem.previousElementSibling !== null) {
+          currentItem.previousElementSibling.setAttribute('aria-selected', 'true');
+        } else {
+          if (list.querySelectorAll('li').length > 9) {
+            list.querySelectorAll('li')[9].setAttribute('aria-selected', 'true');
+          } else {
+            list.querySelectorAll('li')[list.querySelectorAll('li').length - 1].setAttribute('aria-selected', 'true');
+          }
+        }
+      }
+      $(searchBar).trigger('awesomplete-highlight');
+    }
+
+    if (e.keyCode === 40) {
+      if (list.querySelector('[aria-selected="true"]')) {
+        const currentItem = list.querySelector('li[aria-selected="true"]');
+        currentItem.setAttribute('aria-selected', 'false');
+        if (currentItem.nextElementSibling !== null && $(list.querySelectorAll('li')).index(currentItem) < 9) {
+          currentItem.nextElementSibling.setAttribute('aria-selected', 'true');
+        } else {
+          list.querySelectorAll('li')[0].setAttribute('aria-selected', 'true');
+        }
+      } else {
+        list.querySelectorAll('li')[1].setAttribute('aria-selected', 'true');
+      }
+      $(searchBar).trigger('awesomplete-highlight');
+    }
+
+    if (e.keyCode === 13) {
+      $(searchBar).trigger('awesomplete-select');
+    }
+  });
+
+  $(searchBar).on('awesomplete-highlight', e => {
+    input = searchBar.textContent;
+    const text = document.querySelector('li[aria-selected="true"]').textContent
+    searchBar.textContent = text;
+  });
+
+  $(searchBar).on('awesomplete-select', (e, target) => {
+    let text;
+    if (target !== undefined) {
+      text = target.textContent;
+    } else {
+      text = document.querySelector('li[aria-selected="true"]').textContent
+    }
+
+    e.preventDefault();
+    searchBar.textContent = text;
+
+    main.search(text);
+    list.innerHTML = '';
+  });
+
+  function addClassHebrew() {
+    $('.awesomplete').each(function () {
+      if (isHebrew($(this).text()))
+        $(this).addClass('hebrew');
+    });
+  }
+
+  function removeClassHebrew() {
+    $('.awesomplete').each(function () {
+      if (!isHebrew($(this).text()))
+        $(this).removeClass('hebrew');
+    });
+  }
+
+  function isHebrew(str) {
+    var isHebrew = XRegExp('[\\p{Hebrew}]');
+    var partHebrew = 0;
+    var rtlIndex = 0;
+    var isRTL = false;
+
+    for (i = 0; i < str.length; i++) {
+      if (isHebrew.test(str[i]))
+        partHebrew++;
+    }
+    rtlIndex = partHebrew;
+    if (rtlIndex > .5) {
+      isRTL = true;
+    }
+
+    return isRTL;
+  }
+
+
+  $('.url').focus(addClassHebrew).on('input', (addClassHebrew)).on('input', (addClassHebrew));
+  $('.url').focus(removeClassHebrew).on('input', (removeClassHebrew)).on('input', (removeClassHebrew));
+
+</script>
+
+</html>

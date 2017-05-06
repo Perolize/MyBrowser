@@ -1,0 +1,146 @@
+body {
+    user-select: none;
+}
+
+header {
+    margin-top: 6%;
+}
+
+img.logo:hover {
+    box-shadow: -3px 3px 20px 0px #c3c3c3;
+}
+
+img.logo {
+    width: 19rem;
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+    border-radius: 50%;
+    transition: all .3s;
+}
+
+.awesomplete {
+    display: block;
+}
+
+.awesomplete.hebrew {
+    text-align: right;
+    direction: rtl;
+}
+
+input.searchBar {
+    width: 100%;
+    border: 1px solid #c3c3c3;
+    padding: .3rem .4rem;
+    border-radius: .2rem;
+    outline-color: #3498db;
+    transition: all .3s;
+}
+
+.awesomplete.focus input.searchBar {
+    box-shadow: -3px 4px 20px #c3c3c3;
+    border: 1px solid transparent;
+}
+
+.awesomplete ul {
+    margin: 0;
+    border-radius: 0px 0px 8px 8px;
+    border-top: 0;
+    padding: .2rem .3rem;
+    transition: all .3s;
+    max-height: 21.45rem;
+    overflow: hidden;
+}
+
+.awesomplete.focus ul {
+    box-shadow: -3px 4px 20px #c3c3c3;
+    border: 1px solid transparent;
+    outline: 5px auto #3498db;
+    outline-offset: -2px;
+}
+
+.awesomplete ul::before {
+    content: none;
+}
+
+.awesomplete ul li {
+    border-radius: .2rem;
+    margin: .2rem;
+    transition: all .1s;
+}
+
+.awesomplete ul li:hover,
+.awesomplete ul li[aria-selected="true"] {
+    background: #3c9cdc;
+    color: #fff;
+}
+
+.recentSites {
+    width: 100%;
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.site {
+    display: inline-block;
+    margin-right: 4rem;
+    position: relative;
+    cursor: default;
+}
+
+.site:not([disabled]) {
+    cursor: pointer;
+}
+
+.site:last-child {
+    margin-right: 0;
+}
+
+.site .circle {
+    background: #fff;
+    border-radius: 50%;
+    height: 10rem;
+    width: 10rem;
+    display: inline-block;
+    transition: all .3s;
+    border: 1px solid #c3c3c3;
+    background-position: center center;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.site:not([disabled]):hover .circle {
+    box-shadow: -3px 4px 20px #c3c3c3;
+    border: 1px solid transparent;
+    border-radius: 2rem;
+    background-size: 150% 150%;
+}
+
+.site .info {
+    display: block;
+    width: 10rem;
+    height: 0;
+    background: #f5f5f5;
+    transition: all .3s;
+    overflow: hidden;
+    z-index: -5;
+    position: absolute;
+    top: 4rem;
+}
+
+.site:not([disabled]):hover .info {
+    top: 8rem;
+    height: 5rem;
+    border-radius: 0 0 2rem 2rem;
+}
+
+.site .info .title {
+    opacity: 0;
+    margin-top: 2.5rem;
+    transition: all .3s;
+}
+
+.site:not([disabled]):hover .info .title {
+    opacity: 1;
+}

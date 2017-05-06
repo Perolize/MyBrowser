@@ -3,5 +3,6 @@ node_modules
 dist
 build
 img
-src/img/icons/*
-src/img/*.psd
+app/src/img/icons/*
+app/src/img/*.psd
+app/dist

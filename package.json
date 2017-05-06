@@ -1,33 +1,20 @@
 {
   "name": "mybrowser",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A fully customizable web browser that really was made for you",
-  "main": "./dist/main.js",
+  "main": "./app/dist/main.js",
   "scripts": {
-    "build:watch": "tsc -p src/ -w",
+    "build:watch": "tsc -p app/src/ -w",
     "start": "npm run movesssets && concurrently \"npm run build:watch\" \"electron .\" \"npm run watchassets\" \"npm run watchassets2\" ",
-    "movesssets": "cpx \"src/*.{html,css}\" dist && cpx \"src/**/*.{html,css}\" dist &&  cpx \"src/**/*.{js,js.map}\" dist",
-    "watchassets": "onchange \"src/**/*.css\" \"src/**/*.html\" -e \"dist/*\" -v -- cpx \"src/**/*.{html,css}\" dist",
-    "watchassets2": "onchange \"src/*.css\" \"src/*.html\" -e \"dist/*\" -v -- cpx \"src/*.{html,css}\" dist",
-    "pack:osx": "electron-packager . --out=build --platform=darwin --arch=x64 --icon=img/icons/icon.icns --app-copyright=\"Copyright © 2017 Myputer, Inc. All rights reserved\" --build-version=0.0.6 --asar --overwrite",
-    "pack:win32": "electron-packager . --out=build --platform=win32 --arch=ia32 --app-version=0.0.6 --icon=\"img/icons/win.ico\" --win32metadata.ProductName=MyBrowser --win32metadata.FileDescription=\"Myputer Browser\" --win32metadata.CompanyName=Myputer --app-copyright=\"Copyright © 2017 Myputer, Inc. All rights reserved\" --win32metadata.OriginalFilename=\"MyBrowser.exe\" --build-version=0.0.6 --asar --overwrite",
-    "pack:win64": "electron-packager . --out=build --platform=win32 --arch=x64 --app-version=0.0.6 --icon=\"img/icons/win.ico\" --win32metadata.ProductName=MyBrowser --win32metadata.FileDescription=\"Myputer Browser\" --win32metadata.CompanyName=Myputer --app-copyright=\"Copyright © 2017 Myputer, Inc. All rights reserved\" --win32metadata.OriginalFilename=\"MyBrowser.exe\" --build-version=0.0.6 --asar  --overwrite",
-    "build": "npm run pack:osx && npm run pack:win32 && npm run pack:win64"
-  },
-  "build": {
-    "appId": "com.myputer.browser",
-    "mac": {
-      "category": "public.app-category.utilities"
-    },
-    "protocols": [
-      {
-        "name": "mybrowser",
-        "role": "Viewer",
-        "schemes": [
-          "mybrowser"
-        ]
-      }
-    ]
+    "movesssets": "cpx \"app/src/*.{html,css}\" app/dist && cpx \"app/src/**/*.{html,css}\" app/dist &&  cpx \"app/src/**/*.{js,js.map}\" app/dist",
+    "watchassets": "onchange \"app/src/**/*.css\" \"app/src/**/*.html\" -e \"app/dist/*\" -v -- cpx \"app/src/**/*.{html,css}\" app/dist",
+    "watchassets2": "onchange \"app/src/*.css\" \"app/src/*.html\" -e \"app/dist/*\" -v -- cpx \"app/src/*.{html,css}\" app/dist",
+    "pack:osx": "electron-packager . --out=build/MyBrowser-v0.0.7 --platform=darwin --arch=x64 --icon=img/icons/icon.icns --app-copyright=\"Copyright © 2017 Perolize, Inc. All rights reserved\" --build-version=0.0.7 --asar --overwrite",
+    "pack:win32": "electron-packager . --out=build/MyBrowser-v0.0.7 --platform=win32 --arch=ia32 --app-version=0.0.7 --icon=\"img/icons/win.ico\" --win32metadata.ProductName=MyBrowser --win32metadata.FileDescription=\"Perolize Browser\" --win32metadata.CompanyName=Perolize --app-copyright=\"Copyright © 2017 Perolize, Inc. All rights reserved\" --win32metadata.OriginalFilename=\"MyBrowser.exe\" --build-version=0.0.7 --asar --overwrite",
+    "pack:win64": "electron-packager . --out=build/MyBrowser-v0.0.7 --platform=win32 --arch=x64 --app-version=0.0.7 --icon=\"img/icons/win.ico\" --win32metadata.ProductName=MyBrowser --win32metadata.FileDescription=\"Perolize Browser\" --win32metadata.CompanyName=Perolize --app-copyright=\"Copyright © 2017 Perolize, Inc. All rights reserved\" --win32metadata.OriginalFilename=\"MyBrowser.exe\" --build-version=0.0.7 --asar  --overwrite",
+    "pack": "build --dir -w --x64 --ia32",
+    "dist": "build -w --x64 --ia32",
+    "postinstall": "install-app-deps"
   },
   "repository": "",
   "keywords": [
@@ -37,14 +24,13 @@
     "Developer",
     "Shopping"
   ],
-  "author": "Myputer Inc.",
-  "license": "ASL 2.0",
-  "productName": "MyBrowser",
-  "electronVersion": "1.6.4",
+  "author": "Perolize Inc.",
+  "license": "LGPL 3.0",
   "devDependencies": {
     "@types/jquery": "^2.0.41",
     "concurrently": "^3.1.0",
     "electron": "^1.6.4",
+    "electron-builder-squirrel-windows": "^16.7.0",
     "electron-connect": "^0.6.1",
     "electron-packager": "^8.6.0",
     "gulp": "^3.9.1",
@@ -59,12 +45,10 @@
   "dependencies": {
     "del": "^2.2.2",
     "dragula": "^3.7.2",
-    "electron-notification-shim": "^1.1.0",
-    "electron-notify": "^0.1.0",
+    "electron-updater": "^1.11.2",
     "is-url": "^1.2.2",
     "jquery": "^3.1.1",
-    "node-notifier": "^5.1.2",
     "normalize-url": "^1.9.1",
-    "normalize.css": "^5.0.0"
+    "tldjs": "^1.7.0"
   }
 }
