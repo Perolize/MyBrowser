@@ -16,7 +16,7 @@
     "dist": "build -w --x64 --ia32",
     "postinstall": "install-app-deps"
   },
-  "repository": "",
+  "repository": "https://github.com/Perolize/MyBrowser",
   "keywords": [
     "MyBrowser",
     "Browser",
