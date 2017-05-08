@@ -6,6 +6,7 @@ import * as urlModule from './url';
 import * as downloadModule from './download';
 import * as contextMenu from './contextMenu';
 import * as custom from '../designs/default/default';
+import * as modern from '../designs/modern/modern';
 const window = electron.remote.getCurrentWindow()
 const ipcRenderer = electron.ipcRenderer;
 
@@ -26,6 +27,7 @@ export function onWebViewCreated(id: Number = undefined) {
     let isLoaded = false;
 
     custom.addWebviewListeners(wv);
+    modern.addWebviewListeners(wv);
 
     wv.addEventListener('new-window', (e: any) => {
         if (!e.defaultPrevented) {
@@ -56,10 +58,10 @@ export function onWebViewCreated(id: Number = undefined) {
         }
     });
 
-    wv.addEventListener('dom-ready', () => {
+    wv.addEventListener('dom-ready', (e: any) => {
         downloadModule.addListenerForDownload();
         contextMenu.addMenu(id);
-        onNavigating(id);
+        onNavigating(id, e);
         setTitle(id);
         setURL(id);
         addListenerForFavicon(id);
@@ -72,20 +74,20 @@ export function onWebViewCreated(id: Number = undefined) {
     }, { once: true });
 
     wv.addEventListener('will-navigate', (e: any) => {
-        onNavigating(id)
+        onNavigating(id, e)
         checkURL(e.url, id);
     });
 
     wv.addEventListener('did-navigate', (e: any) => {
         added = false;
-        onNavigating(id)
+        onNavigating(id, e)
         checkURL(e.url, id);
         (document.querySelector(`.tabs li[data-id="${id}"] .favicon`) as any).style.display = 'none';
     });
 
     wv.addEventListener('did-navigate-in-page', (e: any) => {
         added = false;
-        onNavigating(id)
+        onNavigating(id, e)
         checkURL(e.url, id);
     });
 
@@ -114,22 +116,26 @@ export function onWebViewCreated(id: Number = undefined) {
         document.querySelector(`.topbar .tabs li[data-id="${id}"] a.nav-link`).classList.remove('audioPlaying');
     });
 
-    wv.addEventListener('did-start-loading', () => {
-        $('.navigation .refresh').val('');
-        $('.nav-item.active').addClass('loading');
+    wv.addEventListener('did-start-loading', (e: any) => {
+        if (!e.defaultPrevented) {
+            $('.navigation .refresh').val('');
+            $('.nav-item.active').addClass('loading');
 
-        wv.removeAttribute('loaded');
+            wv.removeAttribute('loaded');
+        }
     });
 
-    wv.addEventListener('did-stop-loading', () => {
-        $('.navigation .refresh').val('');
-        $('.nav-item.active').removeClass('loading');
+    wv.addEventListener('did-stop-loading', (e: any) => {
+        if (!e.defaultPrevented) {
+            $('.navigation .refresh').val('');
+            $('.nav-item.active').removeClass('loading');
 
-        // $.get('https://twemoji.maxcdn.com/2/twemoji.min.js', (script: any) => {
-        //     wv.executeJavaScript(script);
-        //     wv.executeJavaScript('twemoji.parse(document.body)');
-        //     wv.insertCSS('img.emoji { height: 1em; width: 1em; margin: 0 .05em 0 .1em; vertical-align: -0.1em; }');
-        // });
+            // $.get('https://twemoji.maxcdn.com/2/twemoji.min.js', (script: any) => {
+            //     wv.executeJavaScript(script);
+            //     wv.executeJavaScript('twemoji.parse(document.body)');
+            //     wv.insertCSS('img.emoji { height: 1em; width: 1em; margin: 0 .05em 0 .1em; vertical-align: -0.1em; }');
+            // });
+        }
     });
 
     wv.addEventListener('did-fail-load', (e: any) => {
@@ -278,7 +284,7 @@ export function checkURL(url: string, id: Number = undefined) {
     urlModule.isSecure();
 }
 
-export function onNavigating(id: Number = undefined) {
+export function onNavigating(id: Number = undefined, e: any = undefined) {
     let wv;
     if (id !== undefined) {
         wv = document.querySelector(`.pages webview[data-id="${id}"]`);
