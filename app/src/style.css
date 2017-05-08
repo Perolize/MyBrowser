@@ -750,6 +750,7 @@ li.nav-item:not(.active):hover a.tab-close {
     width: 100%;
     outline: none;
     position: absolute;
+    user-select: initial;
 }
 
 .pages .page.active {
