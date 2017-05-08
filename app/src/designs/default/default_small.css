@@ -58,9 +58,12 @@
     font-size: 1.2rem;
 }
 
-.topbar .tabs li .nav-link.audioPlaying,
-.topbar .tabs li.active .nav-link.audioPlaying {
-    border-width: .3rem 4rem 0 .6rem;
+.topbar .tabs li a.nav-link.audioPlaying {
+    border-width: .1rem 4rem 0 .6rem;
+}
+
+.topbar .tabs li.active a.nav-link.audioPlaying {
+    border-width: .2rem 4rem 0 .6rem;
 }
 
 .topbar .tabs li .tab-close {
@@ -69,5 +72,49 @@
 
 .topbar .tabs li a.audio {
     margin-right: 1.5rem;
-    right: 0;
+    right: 1rem;
+}
+
+.topbar .tabs li.before .favicon {
+    margin: .25rem 0 0 .4rem;
+}
+
+.topbar .tabs li.before:hover .nav-link.audioPlaying {
+    border-width: .1rem 5rem 0 .6rem;
+}
+
+.topbar .tabs li.before a.audio {
+    right: 1rem;
+}
+
+.topbar .tabs li.before:hover a.audio {
+    right: 2rem;
+}
+
+.topbar .tabs li.after a.audio {
+    margin-right: 0;
+}
+
+.topbar .tabs li.after a.nav-link.audioPlaying {
+    border-width: .15rem 2.5rem 0 .6rem;
+}
+
+.topbar .tabs li.after:hover a.audio {
+    right: 2.5rem;
+}
+
+.topbar .tabs li.after:hover a.nav-link.audioPlaying {
+    border-width: .15rem 4rem 0 .6rem;
+}
+
+.topbar .tabs li .favicon {
+    margin: .25rem 0 0 .4rem;
+}
+
+.topbar .tabs li.after:hover .nav-link {
+    border-width: .17rem 2.5rem 0 .6rem;
+}
+
+.topbar .tabs li .nav-link {
+    border-width: .17rem 0 0 .6rem;
 }

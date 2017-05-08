@@ -215,42 +215,46 @@ export function createNewTab(id: number, url: string = 'mybrowser://blank') {
     }
 }
 
-export function onClickTab() {
+export function onClickTab(e: any) {
     const id = parseInt($(this).attr('data-id'));
 
-    if (id !== parseInt($('.tabs li.active').attr('data-id'))) {
+    console.log(!$(e.target).is(`.tabs li[data-id="${id}"] a.audio`), $(`.tabs li[data-id="${id}"] a.audio`).has(e.target).length <= 0, $(`.tabs li[data-id="${id}"] a.audio`).has(e.target).length)
 
-        $('.tabs .nav-item.active').removeClass('active');
-        $('.page.active').removeClass('active');
+    if (!$(e.target).is(`.tabs li[data-id="${id}"] a.audio`) && $(`.tabs li[data-id="${id}"] a.audio`).has(e.target).length <= 0) {
+        if (id !== parseInt($('.tabs li.active').attr('data-id'))) {
 
-        $(`[data-id='${id}']`).addClass('active');
+            $('.tabs .nav-item.active').removeClass('active');
+            $('.page.active').removeClass('active');
 
-        $('.tabs .nav-item').removeClass('before');
-        $('.tabs .nav-item').removeClass('after');
+            $(`[data-id='${id}']`).addClass('active');
 
-        $(this).prev().addClass('before');
-        if ($(this).next().hasClass('nav-item')) {
-            $(this).next().addClass('after');
+            $('.tabs .nav-item').removeClass('before');
+            $('.tabs .nav-item').removeClass('after');
+
+            $(this).prev().addClass('before');
+            if ($(this).next().hasClass('nav-item')) {
+                $(this).next().addClass('after');
+            }
+
+            if (isTyping) {
+                input = $('.navigation .url').text();
+            }
+
+            if ($(`webview[data-id=${id}]`).attr('input') !== (undefined || '')) {
+                console.log($(`webview[data-id=${id}]`).attr('input'))
+
+                setTimeout(() => {
+                    $('.navigation .url').text($(`webview[data-id=${id}]`).attr('input'));
+                }, 3);
+
+                isTyping = true;
+            } else {
+                isTyping = false;
+            }
+
+            webview.setTitle(id)
+            webview.onNavigating(id);
         }
-
-        if (isTyping) {
-            input = $('.navigation .url').text();
-        }
-
-        if ($(`webview[data-id=${id}]`).attr('input') !== (undefined || '')) {
-            console.log($(`webview[data-id=${id}]`).attr('input'))
-
-            setTimeout(() => {
-                $('.navigation .url').text($(`webview[data-id=${id}]`).attr('input'));
-            }, 3);
-
-            isTyping = true;
-        } else {
-            isTyping = false;
-        }
-
-        webview.setTitle(id)
-        webview.onNavigating(id);
     }
 }
 
