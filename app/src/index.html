@@ -191,7 +191,7 @@
             })
             .then(() => {
               if (searchBar.textContent === '') {
-                removeClassHebrew();
+                // removeClassHebrew();
               }
             });
 
@@ -253,18 +253,20 @@
   });
 
   $(searchBar).on('awesomplete-select', (e, target) => {
-    let text;
-    if (target !== undefined) {
-      text = target.textContent;
-    } else {
-      text = document.querySelector('li[aria-selected="true"]').textContent
+    if (!e.isDefaultPrevented()) {
+      let text;
+      if (target !== undefined) {
+        text = target.textContent;
+      } else {
+        text = document.querySelector('li[aria-selected="true"]').textContent
+      }
+
+      e.preventDefault();
+      searchBar.textContent = text;
+
+      main.search(text);
+      list.innerHTML = '';
     }
-
-    e.preventDefault();
-    searchBar.textContent = text;
-
-    main.search(text);
-    list.innerHTML = '';
   });
 
   function addClassHebrew() {
@@ -300,8 +302,8 @@
   }
 
 
-  $('.url').focus(addClassHebrew).on('input', (addClassHebrew)).on('input', (addClassHebrew));
-  $('.url').focus(removeClassHebrew).on('input', (removeClassHebrew)).on('input', (removeClassHebrew));
+  // $('.url').focus(addClassHebrew).on('input', (addClassHebrew)).on('input', (addClassHebrew));
+  // $('.url').focus(removeClassHebrew).on('input', (removeClassHebrew)).on('input', (removeClassHebrew));
 
 </script>
 
