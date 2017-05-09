@@ -1,6 +1,6 @@
 {
   "name": "mybrowser",
-  "version": "0.0.7",
+  "version": "0.1.1-alpha",
   "description": "A fully customizable web browser that really was made for you",
   "main": "./app/dist/main.js",
   "scripts": {

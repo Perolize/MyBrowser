@@ -2,21 +2,25 @@ productName: "MyBrowser"
 appId: "com.perolize.browser"
 copyright: "Copyright © 2017 Perolize, Inc. All rights reserved"
 compression: "store"
-buildVersion: "0.0.7"
-asar: false
+buildVersion: "0.1.1-alpha"
+asar: true
 # electronDist: "./dist/${productName}-v${version}/${productName}-v${version}-${os}-${arch}"
 win: {
   target: [
     "squirrel",
     "dir",
-    "nsis"
-  ]
+    "nsis",
+    "nsis-web"
+  ],
+  publish: {
+    provider: "github"
+  }
 }
 mac: {
   category: "public.app-category.utilities"
 }
 squirrelWindows: { 
-  iconUrl: "http://perolize.com/assets/img/win.ico",
+  iconUrl: "http://perolize.com/mybrowser/img/win.ico",
   remoteReleases: ""
 }
 protocols: {
