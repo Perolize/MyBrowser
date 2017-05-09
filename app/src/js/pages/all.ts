@@ -117,6 +117,37 @@ function defaultFunc() {
     document.addEventListener('click', () => {
         ipcRenderer.sendToHost('click')
     });
+
+    const xmlURL = document.head.querySelector('link[type="application/opensearchdescription+xml"]').getAttribute('href');
+
+    if (xmlURL.length > 0) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", xmlURL, true);
+
+        xhr.onload = () => {
+            if (xhr.readyState === xhr.DONE) {
+                if (xhr.status === 200) {
+                    const xml = xhr.responseXML;
+
+                    const searchURL = xml.querySelector("Url:not([rel=\"suggestions\"])").getAttribute("template");
+                    let suggestionsURL: any = xml.querySelector("Url[rel=\"suggestions\"]")
+                    if(suggestionsURL !== null) {
+                        suggestionsURL = suggestionsURL.getAttribute("template");
+                    } else {
+                        suggestionsURL = xml.querySelector("Url[type=\"application/x-suggestions+json\"]");
+                        if(suggestionsURL !== null) {
+                            suggestionsURL = suggestionsURL.getAttribute('template');
+                        }
+                    }
+                    const description = xml.getElementsByTagName("ShortName")[0].textContent;
+
+                    ipcRenderer.sendToHost('searchURL', searchURL, description, suggestionsURL);
+                }
+            }
+        }
+
+        xhr.send();
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

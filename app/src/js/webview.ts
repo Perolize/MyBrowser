@@ -155,6 +155,7 @@ export function onWebViewCreated(id: Number = undefined) {
     contextMenu.onDevToolsOpen();
     contextMenu.onOpenInNewTab();
     contextMenu.onContextMenu();
+    urlModule.addListenerSearchInUrl(wv);
     onHoverLink(id);
     onOpenView(id);
     onSearch();
