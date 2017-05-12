@@ -1,10 +1,13 @@
 import * as electron from 'electron';
 import * as path from 'path';
 import * as isUrl from 'is-url';
+import * as tld from 'tldjs';
+import * as tabs from './tab';
 import * as main from './main';
 import * as urlModule from './url';
 import * as downloadModule from './download';
 import * as contextMenu from './contextMenu';
+import * as permissions from './permissions';
 import * as custom from '../designs/default/default';
 import * as modern from '../designs/modern/modern';
 const window = electron.remote.getCurrentWindow()
@@ -31,30 +34,7 @@ export function onWebViewCreated(id: Number = undefined) {
 
     wv.addEventListener('new-window', (e: any) => {
         if (!e.defaultPrevented) {
-            const id = parseInt($('.tabs li').last().attr('data-id')) + 1;
-            const prevTab = $('.tabs li.active');
-            const url = e.url || e.detail;
-            const tabLI = `<li class="nav-item" data-id="${id}"><span class="fa fa-spinner"></span><img class="favicon" draggable="false" /><a class="nav-link">Blank</a><a class="audio"><i class="fa fa-volume-up"></i></a><a class="tab-close"><i class="fa fa-times"></i></a></li>`;
-            const page = `<webview class="page" src="${url}" data-id="${id}"></webview>`
-
-            // $('.tabs .nav-item').removeClass('active');
-            $(tabLI).insertAfter(prevTab);
-            // $('.page').removeClass('active');
-            $('.pages').append(page);
-
-            // $('.tabs .nav-item').removeClass('before');
-            // $('.tabs .nav-item').removeClass('after');
-
-            // $('.tabs .nav-item.active').prev().addClass('before');
-            // if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
-            //     $('.tabs .nav-item.active').next().addClass('after');
-            // }
-
-            $('.tabs .nav-item').on('click', main.onClickTab);
-            $(`.tabs .nav-item[data-id="${id}"] .audio`).on('click', main.onClickAudio);
-            $(".nav-item .tab-close").on("click", main.onClickRemoveTab);
-
-            onWebViewCreated(id);
+            tabs.newTab(e.url || e.detail, false)
         }
     });
 
@@ -491,7 +471,7 @@ export function onAskPermission(id: Number = undefined) {
     }
 
     wv.getWebContents().session.setPermissionRequestHandler((webContents: any, permission: any, callback: any) => {
-        const url = wv.getURL();
+        const url = tld.getDomain(wv.getURL());
 
         console.log(grantedSites, deniedSites)
 
@@ -503,14 +483,16 @@ export function onAskPermission(id: Number = undefined) {
         } else if (deny) {
             callback(false)
         } else if (!grant && !deny) {
-            const ask = confirm(permission)
-            callback(ask)
+            permissions.requestPermission(permission, url)
+                .then((ask: boolean) => {
+                    callback(ask)
 
-            if (ask) {
-                grantedSites.push(url)
-            } else {
-                deniedSites.push(url);
-            }
+                    if (ask) {
+                        grantedSites.push(url)
+                    } else {
+                        deniedSites.push(url);
+                    }
+                });
         }
     });
 }

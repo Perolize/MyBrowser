@@ -89,6 +89,18 @@
       </ul>
     </div>
   </div>
+  <div class="permission">
+    <div class="main">
+      <h1>Notifications</h1>
+      <p>Allow <span class="website">mybrowser://blank</span> to <span class="perm">notifications</span>?</p>
+    </div>
+    <input type="checkbox" id="remember">
+    <label for="remember">Remember this choice</label>
+    <div class="btns">
+      <input class="allow btn" type="button" value="Allow">
+      <input class="btn" type="button" value="Don't allow">
+    </div>
+  </div>
   <div class="search" style="display: none">
     <input class="searchbox" type="text">
     <span class="matches">No Results</span>
@@ -107,9 +119,11 @@
   require('jquery')
   require('dragula')
   require('./js/main.js')
+  require('./js/urlLoad.js')
   require('./js/navbar.js')
   require('electron-titlebar')
   require('./js/shortcuts.js')
+  require('./js/permissions.js');
   require('./designs/default/default')
   require('./designs/modern/modern')
 

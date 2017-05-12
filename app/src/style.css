@@ -712,6 +712,63 @@ span.searchOn {
     cursor: pointer;
 }
 
+.permission {
+    width: 17rem;
+    background: #fff;
+    box-shadow: -2px 7px 20px 4px #333;
+    border-radius: .4rem;
+    margin: .5rem 0 0 .6rem;
+    z-index: 20;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all .3s;
+    left: -18rem;
+}
+
+.permission .main {
+    padding: .3rem 1rem 0;
+    flex: 1 1 0;
+    cursor: default;
+}
+
+.permission h1 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    text-align: center;
+}
+
+.permission p {
+    color: #333;
+}
+
+.permission p span.website {
+    font-style: italic;
+    font-weight: 500;
+}
+
+.permission .btns {
+    margin-top: .5rem;
+    flex: 1 1;
+}
+
+.permission .btn {
+    border: 0;
+    background: #f5f5f5;
+    padding: .5rem .6rem;
+    flex: 1 1 0;
+    height: 100%;
+    border-top: 1px solid #c3c3c3;
+    cursor: pointer;
+}
+
+.permission .allow.btn {
+    background: #3498db;
+    color: #fff;
+    border-color: #3498db;
+}
+
 .search {
     width: 25rem;
     display: flex;
