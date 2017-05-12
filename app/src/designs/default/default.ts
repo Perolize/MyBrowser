@@ -24,6 +24,10 @@ export function addWebviewListeners(wv: any) {
     });
 }
 
+export function onTabCreated(id: Number = undefined) {
+    reorderTabs($('.tabs li.active'), 'both');
+}
+
 function onClickTab(e: any) {
     if ($(e.target).hasClass('nav-item')) {
         const $target = $(e.target);
@@ -42,7 +46,6 @@ export function reorderTabs($target: any, side: string) {
     switch (side) {
         case 'left':
             $target.prevAll().each((i: any, item: any) => {
-                console.log(item)
                 $(item).css('z-index', zIndex - 1);
                 $(item).addClass('before');
                 zIndex--;
@@ -52,7 +55,6 @@ export function reorderTabs($target: any, side: string) {
         case 'right':
             $target.nextAll().each((i: any, item: any) => {
                 if ($(item).hasClass('nav-item')) {
-                    console.log(item)
                     $(item).css('z-index', zIndex - 1);
                     $(item).addClass('after');
                     zIndex--;

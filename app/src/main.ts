@@ -61,6 +61,10 @@ function createWindow() {
     slashes: true
   }))
 
+  ipcMain.on('ready', (e: any) => {
+    e.sender.send('open-url', 'mybrowser://blank');
+  });
+
   // ipcMain.on('notification', (e, msg) => {
   //   var eNotify = require('electron-notify');
   //   // Change config options
@@ -77,6 +81,10 @@ function createWindow() {
   //     }
   //   });
   // });
+  
+  ipcMain.on('new-window', (e: any, msg: any) => {
+    createNewWindow(msg || undefined);
+  });
 
   ipcMain.on('notification-shim', (e, msg) => {
     console.log(msg)
@@ -141,6 +149,91 @@ function createWindow() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null
+  })
+}
+
+function createNewWindow(tabUrl = 'mybrowser://blank') {
+  // Create the browser window.
+  let newWin = new BrowserWindow({ width: 800, height: 600, frame: false, icon: path.join(__dirname, 'img/logo-2.png') });
+
+  // and load the index.html of the app.
+  newWin.loadURL(url.format({
+    pathname: path.join(__dirname, `./index.html`),
+    protocol: 'file:',
+    slashes: true
+  }))
+
+  ipcMain.on('ready', (e: any) => {
+    e.sender.send('open-url', tabUrl);
+  });
+
+  ipcMain.on('new-window', (e: any, msg: any) => {
+    createNewWindow(msg || undefined);
+  });
+
+  ipcMain.on('notification-shim', (e, msg) => {
+    console.log(msg)
+    const eNotify = require('./js/notification/notifier/index.js');
+
+    if (msg.options.icon === undefined || msg.options.icon === '') {
+      msg.options.icon = path.join(__dirname, './img/logo.png');
+    } else {
+      console.log(msg.options.icon === undefined || msg.options.icon === '')
+    }
+    eNotify.setConfig({
+      width: 400,
+      height: 200,
+      defaultStyleContainer: {
+        backgroundColor: '#f0f0f0',
+        overflow: 'hidden',
+        padding: 8,
+        border: '1px solid #CCC',
+        fontFamily: 'Arial',
+        fontSize: 18,
+        position: 'relative',
+        lineHeight: '21px'
+      },
+      appIcon: msg.options.icon,
+      defaultStyleAppIcon: {
+        overflow: 'hidden',
+        float: 'left',
+        height: 175,
+        width: 175,
+        marginRight: 10,
+      },
+      defaultStyleText: {
+        margin: 0,
+        overflow: 'hidden',
+        cursor: 'default'
+      },
+      displayTime: 6000,
+      originUrl: msg.options.originUrl,
+      webviewId: msg.options.webviewId
+    });
+    eNotify.setTemplatePath(path.join(__dirname, './templates/notification.html'));
+
+    msg.originUrl = msg.options.originUrl;
+    msg.webviewId = msg.options.webviewId;
+    msg.text = msg.options.body || 'test';
+    msg.onClickFunc = (event: any) => { e.sender.send('show', msg); event.closeNotification() };
+    console.log(msg);
+
+    eNotify.notify(msg);
+  });
+
+  ipcMain.on('open-view', (e, notificationObj) => {
+    ipcRenderer.send('open-view', notificationObj);
+  });
+
+  // Open the DevTools.
+  // mainWindow.webContents.openDevTools()
+
+  // Emitted when the window is closed.
+  newWin.on('closed', function () {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    newWin = null
   })
 }
 

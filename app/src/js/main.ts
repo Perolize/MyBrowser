@@ -1,6 +1,7 @@
-import { remote } from 'electron';
+import { remote, ipcMain } from 'electron';
 import * as isUrl from 'is-url';
 import * as normalizeUrl from 'normalize-url';
+import * as tabs from './tab';
 import * as settings from '../settings';
 import * as webview from './webview';
 import * as url from './url';
@@ -87,31 +88,7 @@ $(".nav-item .tab-close").on("click", onClickRemoveTab);
 
 document.querySelector(".new-tab").addEventListener("click", e => {
     if (!e.defaultPrevented) {
-        const id = parseInt($('.new-tab').prev().attr('data-id')) + 1;
-        const tabLI = `<li class="nav-item active" data-id="${id}"><span class="fa fa-spinner"></span><img class="favicon" draggable="false" /><a class="nav-link">Blank</a><a class="audio"><i class="fa fa-volume-up"></i></a><a class="tab-close"><i class="fa fa-times"></i></a></li>`;
-        const page = `<webview class="page active" src="mybrowser://blank" data-id="${id}"></webview>`
-
-        const wv = document.querySelector('webview.active');
-
-        $('.tabs .nav-item').removeClass('active');
-        $(tabLI).insertBefore('.new-tab');
-        $('.page').removeClass('active');
-        $('.pages').append(page);
-
-        $('.tabs .nav-item').removeClass('before');
-        $('.tabs .nav-item').removeClass('after');
-
-        $('.tabs .nav-item.active').prev().addClass('before');
-        if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
-            $('.tabs .nav-item.active').next().addClass('after');
-        }
-
-        $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
-        $(`.tabs .nav-item[data-id="${id}"] .audio`).on('click', onClickAudio);
-        $(".nav-item .tab-close").on("click", onClickRemoveTab);
-
-        webview.onWebViewCreated(id);
-        webview.render('blank', 'mybrowser://blank');
+        tabs.newTab();
     }
 });
 
@@ -189,30 +166,7 @@ document.querySelector('.navigation .refresh').addEventListener('click', (e: any
 
 
 export function createNewTab(id: number, url: string = 'mybrowser://blank') {
-    const tabLI = `<li class="nav-item" data-id="${id}"><span class="fa fa-spinner"></span><img class="favicon" draggable="false" /><a class="nav-link">Blank</a><a class="audio"><i class="fa fa-volume-up"></i></a><a class="tab-close"><i class="fa fa-times"></i></a></li>`;
-    const page = `<webview class="page" src="${url}" data-id="${id}"></webview>`
-
-    // $('.tabs .nav-item').removeClass('active');
-    $(tabLI).insertBefore('.new-tab');
-    // $('.page').removeClass('active');
-    $('.pages').append(page);
-
-    // $('.tabs .nav-item').removeClass('before');
-    // $('.tabs .nav-item').removeClass('after');
-
-    // $('.tabs .nav-item.active').prev().addClass('before');
-    // if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
-    //     $('.tabs .nav-item.active').next().addClass('after');
-    // }
-
-    $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
-    $(`.tabs .nav-item[data-id="${id}"] .audio`).on('click', onClickAudio);
-    $(".nav-item .tab-close").on("click", onClickRemoveTab);
-
-    webview.onWebViewCreated(id);
-    if (url === 'mybrowser://blank') {
-        webview.render('blank', 'mybrowser://blank');
-    }
+    tabs.newTab(url, true, id)
 }
 
 export function onClickTab(e: any) {
