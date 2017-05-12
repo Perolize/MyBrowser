@@ -118,3 +118,7 @@
 .topbar .tabs li .nav-link {
     border-width: .17rem 0 0 .6rem;
 }
+
+.pages {
+    height: calc(100vh - 5rem);
+}
