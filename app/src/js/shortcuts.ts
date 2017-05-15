@@ -154,6 +154,9 @@ $('.titlebar').mouseleave( () => {
     }
 });
 
+Mousetrap.bind(['ctrl+shift+t', 'cmd+shift+t'], () => {
+    tabs.restoreTab();
+});
 
 Mousetrap.bind(['ctrl+1', 'command+1'], () => {
     const activeTab = document.querySelector('.tabs li.active');

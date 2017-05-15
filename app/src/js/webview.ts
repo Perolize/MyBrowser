@@ -38,6 +38,12 @@ export function onWebViewCreated(id: Number = undefined) {
         }
     });
 
+    $(`.tabs li[data-id="${id}"]`).on('remove', (e: any) => {
+        if (!e.defaultPrevented) {
+            tabs.onDestroy(wv, document.querySelector(`.tabs li[data-id="${id}"]`));
+        }
+    });
+
     wv.addEventListener('dom-ready', (e: any) => {
         downloadModule.addListenerForDownload();
         contextMenu.addMenu(id);
