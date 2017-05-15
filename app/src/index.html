@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="./css/bootstrap-reboot.min.css">
   <link rel="stylesheet" href="./css/bootstrap-grid.min.css">
   <link rel="stylesheet" href="mybrowser://js/plugins/awesomplete.css" />
+  <link rel="stylesheet" href="../../node_modules/dragula/dist/dragula.min.css" />
   <link rel="stylesheet" href="./css/font-awesome.min.css">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./designs/default/default.css">
@@ -119,7 +120,6 @@
   console.time('jquery')
   require('jquery')
   console.timeEnd('jquery')
-  require('dragula')
   console.time('main')
   require('./js/main.js')
   require('./js/urlLoad.js')
@@ -199,7 +199,6 @@
     main.getSuggestionsMain(selectedSearchEngine.name, `${selectedSearchEngine.suggestionUrl}${searchBar.textContent}`)
       .then(msg => {
         suggestions = msg;
-        console.log(suggestions);
         if (searchBar.textContent !== '') {
           const li = document.createElement('li');
           li.innerHTML = searchBar.textContent;

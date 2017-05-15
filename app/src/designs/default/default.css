@@ -6,7 +6,8 @@
     z-index: 1000000000;
 }
 
-.topbar .tabs li {
+.topbar .tabs li,
+.nav-item {
     border-top-right-radius: 1.5rem;
     border-top-left-radius: 1.5rem;
     margin-left: -1.8rem;
@@ -18,7 +19,8 @@
     padding-left: 1.8rem;
 }
 
-.topbar .tabs li .nav-link.audioPlaying {
+.topbar .tabs li .nav-link.audioPlaying,
+.nav-item .nav-link.audioPlaying {
     border-width: .8rem 4.5rem .5rem 1rem;
 }
 
@@ -40,12 +42,16 @@
 
 .topbar .tabs li.before,
 .topbar .tabs li.active,
-.topbar .tabs li.after {
+.topbar .tabs li.after,
+.nav-item.before,
+.nav-item.active,
+.nav-item.after {
     border: 1px solid #9e9e9e;
     border-bottom: 0;
 }
 
-.topbar .tabs li.before {
+.topbar .tabs li.before,
+.nav-item.before {
     padding-left: .8rem;
 }
 
@@ -57,7 +63,8 @@
     border-width: .6rem 3.5rem .5rem 1rem;
 }
 
-.topbar .tabs li.before .nav-link {
+.topbar .tabs li.before .nav-link,
+.nav-item.before .nav-link {
     border-width: .6rem 2rem .5rem 1rem;
 }
 
@@ -65,15 +72,18 @@
     border-width: .6rem 5rem .5rem 1rem;
 }
 
-.topbar .tabs li.before a.audio {
+.topbar .tabs li.before a.audio,
+.nav-item.before a.audio {
     right: 3.5rem;
 }
 
-.topbar .tabs li.before a.tab-close {
+.topbar .tabs li.before a.tab-close,
+.nav-item.before a.tab-close {
     right: 2rem;
 }
 
-.topbar .tabs li.active {
+.topbar .tabs li.active,
+.nav-item.active {
     z-index: 5!important;
     height: 2.87rem;
     margin-top: 0;
@@ -84,12 +94,15 @@
     padding-left: 1.5rem;
 }
 
-.topbar .tabs li.active .favicon {
+.topbar .tabs li.active .favicon,
+.nav-item.active .favicon {
     margin: .8rem 0 .5rem .4rem;
 }
 
 .topbar .tabs li.active a.audio,
-.topbar .tabs li.active a.tab-close {
+.topbar .tabs li.active a.tab-close,
+.nav-item.active a.audio,
+.nav-item.active a.tab-close {
     top: .8rem;
 }
 
@@ -97,25 +110,31 @@
     border-width: .8rem 2.5rem .5rem 1rem;
 }
 
-.topbar .tabs li.active .nav-link.audioPlaying {
+.topbar .tabs li.active .nav-link.audioPlaying,
+.nav-item.active .nav-link.audioPlaying {
     border-width: .8rem 4rem .5rem 1rem;
 }
 
-.topbar .tabs li.after {
+.topbar .tabs li.after,
+.nav-item.after {
     padding-left: 1.8rem;
 }
 
-.topbar .tabs li .favicon {
+.topbar .tabs li .favicon,
+.nav-item .favicon {
     margin: .6rem 0 .5rem .4rem;
 }
 
-.topbar .tabs li .nav-link {
+.topbar .tabs li .nav-link,
+.nav-item .nav-link {
     text-overflow: clip;
     border-width: .6rem 1rem .5rem;
 }
 
 .topbar .tabs li a.tab-close, 
-.topbar .tabs li a.audio {
+.topbar .tabs li a.audio,
+.nav-item a.tab-close,
+.nav-item a.audio {
     top: .6rem;
 }
 

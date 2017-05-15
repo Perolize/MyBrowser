@@ -55,7 +55,8 @@ win-controls {
     overflow: auto;
 }
 
-.topbar .tabs li {
+.topbar .tabs li,
+.nav-item {
     -webkit-app-region: no-drag;
     display: flex;
     flex: 1 1 0;
@@ -78,7 +79,9 @@ li.nav-item:not(.active):hover {
 }
 
 .topbar .tabs li:before,
-.topbar .tabs li:after {
+.topbar .tabs li:after,
+.nav-item:before,
+.nav-item:after {
     position: absolute;
     bottom: -1px;
     width: 6px;
@@ -86,38 +89,45 @@ li.nav-item:not(.active):hover {
     content: " ";
 }
 
-.topbar .tabs li:before {
+.topbar .tabs li:before,
+.nav-item:before {
     left: -6px;
     border-bottom-right-radius: 6px;
     border-width: 0 1px 1px 0;
 }
 
-.topbar .tabs li:after {
+.topbar .tabs li:after,
+.nav-item:after {
     right: -6px;
     border-bottom-left-radius: 6px;
     border-width: 0 0 1px 1px;
 }
 
-.topbar .tabs li.active {
+.topbar .tabs li.active,
+.nav-item.active {
     background: #f5f5f5;
     border-color: #ddd #ddd #f5f5f5;
     z-index: 5;
     cursor: default;
 }
 
-.topbar .tabs li.active:before {
+.topbar .tabs li.active:before,
+.nav-item.active:before {
     box-shadow: 2px 2px 0 #f5f5f5;
 }
 
-.topbar .tabs li.active:after {
+.topbar .tabs li.active:after,
+.nav-item.active:after {
     box-shadow: -2px 2px 0 #f5f5f5;
 }
 
-.topbar .tabs li.before, .topbar .tabs li.after {
+.topbar .tabs li.before, .topbar .tabs li.after,
+.nav-item.before, .nav-item.after {
     border: 1px solid transparent;
 }
 
-.topbar .tabs li.after {
+.topbar .tabs li.after,
+.nav-item.after {
     border-right: 1px solid #aaa;
 }
 
@@ -125,15 +135,18 @@ li.nav-item:not(.active):hover {
     border: 1px solid transparent;
 }
 
-.topbar .tabs li a.nav-link.audioPlaying {
+.topbar .tabs li a.nav-link.audioPlaying,
+.nav-item a.nav-link.audioPlaying {
     border-width: .8rem 4rem .5rem 1rem;
 }
 
-.topbar .tabs li span {
+.topbar .tabs li span,
+.nav-item span {
     display: none;
 }
 
-.topbar .tabs li.loading span {
+.topbar .tabs li.loading span,
+.nav-item.loading span {
     display: inline-block;
     margin: .8rem 0 .5rem 1rem;
     font-size: 1.4rem;
@@ -141,18 +154,21 @@ li.nav-item:not(.active):hover {
     animation: spin 1.2s linear infinite;
 }
 
-.topbar .tabs li .favicon {
+.topbar .tabs li .favicon,
+.nav-item .favicon {
     height: 1.4rem;
     width: 1.4rem;
     margin: .8rem 0 .5rem 1rem;
     display: block;
 }
 
-.topbar .tabs li.loading .favicon {
+.topbar .tabs li.loading .favicon,
+.nav-item.loading .favicon {
    display: none;
 }
 
-.topbar .tabs li .nav-link {
+.topbar .tabs li .nav-link,
+.nav-item .nav-link {
     text-overflow: clip;
     white-space: nowrap;
     border: 1px solid transparent;
@@ -161,17 +177,22 @@ li.nav-item:not(.active):hover {
 }
 
 .topbar .tabs li.active .nav-link,
-.topbar .tabs li:hover .nav-link {
+.topbar .tabs li:hover .nav-link,
+.nav-item.active .nav-link,
+.nav-item:hover .nav-link {
     border-width: .8rem 2.5rem .5rem 1rem;
 }
 
 .topbar .tabs li.active a.tab-close,
-li.nav-item:not(.active):hover a.tab-close {
+li.nav-item:not(.active):hover a.tab-close,
+.nav-item.active a.tab-close {
     display: block;
 }
 
 .topbar .tabs li a.tab-close,
-.topbar .tabs li a.audio {
+.topbar .tabs li a.audio,
+.nav-item a.tab-close,
+.nav-item a.audio {
     display: none;
     border: 1px solid transparent;
     border-radius: 50%;
@@ -186,12 +207,14 @@ li.nav-item:not(.active):hover a.tab-close {
     cursor: pointer;
 }
 
-.topbar .tabs li a.audio {
+.topbar .tabs li a.audio,
+.nav-item a.audio {
     right: 2.5rem;
     color: #000;
 }
 
-.topbar .tabs li a.audio i {
+.topbar .tabs li a.audio i,
+.nav-item a.audio i {
     height: 1.4rem;
     width: 1.4rem;
     left: .25rem;
@@ -204,7 +227,9 @@ li.nav-item:not(.active):hover a.tab-close {
 }
 
 .topbar .tabs li a.tab-close i,
-.topbar.tabs li a.audio i {
+.topbar.tabs li a.audio i,
+.nav-item a.audio i,
+.nav-item a.tab-close i {
     height: 1.4rem;
     width: 1.4rem;
     left: .25rem;

@@ -1,4 +1,5 @@
-.topbar .tabs li {
+.topbar .tabs li,
+.nav-item {
     border-top-right-radius: .6rem;
     border-top-left-radius: .6rem;
 }

@@ -1,7 +1,29 @@
 import * as storage from 'electron-storage';
+import * as dragula from 'dragula';
 import * as main from '../main';
 import * as webview from '../webview';
 import * as custom from '../../designs/default/default';
+
+const tabs = dragula([document.querySelector('.tabs')],
+    {
+        direction: 'horizontal',
+        invalid: (el: any, handle: any) => {
+            if (!$(el).is('.new-tab')) {
+                return false;
+            } else {
+                return true;
+            }
+        },
+        accepts: (el: any, target: any, src: any, sibling: any) => {
+            if (sibling === null) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    });
+
+tabs.on('drop', onDrop);
 
 export function newTab(tabUrl = 'mybrowser://blank', open: boolean = true, id: any = parseInt($('.new-tab').prev().attr('data-id')) + 1, callback: any = undefined) {
     const tabLI = `<li class="nav-item ${open ? 'active' : ''}" data-id="${id}"><span class="fa fa-spinner"></span><img class="favicon" draggable="false" /><a class="nav-link">Blank</a><a class="audio"><i class="fa fa-volume-up"></i></a><a class="tab-close"><i class="fa fa-times"></i></a></li>`;
@@ -48,6 +70,19 @@ export function newTab(tabUrl = 'mybrowser://blank', open: boolean = true, id: a
     }
 }
 
+export function onDrop(tab: any) {
+    $('.tabs li').each((i: any) => {
+        $(`.tabs li:eq(${i})`).attr('pos', i);
+    });
+
+    custom.reorderTabs($(tab), 'both')
+
+    if (!$(tab).hasClass('active')) {
+        $('.tabs li.active').removeClass('active');
+        $(tab).addClass('active');
+    }
+}
+
 export function onDestroy(wv: any, tab: any) {
     const id = wv.getAttribute('data-id');
     const pos = tab.getAttribute('pos');
@@ -58,20 +93,13 @@ export function onDestroy(wv: any, tab: any) {
             if (!itDoes) {
                 storage.set('temp/closedTabs', { tabs: [{ url: url, id: wv.getAttribute('data-id'), pos: pos, time: Date.now() }] })
                     .then(() => {
-                        console.log(pos)
-                        console.log('saved!');
                     });
             } else {
                 storage.get('temp/closedTabs', (err: any, data: any) => {
                     if (!err) {
-                        console.log(tab)
                         data.tabs.push({ url: url, id: wv.getAttribute('data-id'), pos: pos, time: Date.now() });
-                        console.log(data)
 
                         storage.set('temp/closedTabs', data)
-                            .then(() => {
-                                console.log('updated list!');
-                            });
                     } else {
                         console.error(err);
                     }
@@ -103,9 +131,6 @@ export function restoreTab() {
                             data.tabs.pop()
 
                             storage.set('temp/closedTabs', data)
-                                .then(() => {
-                                    console.log('restored tab!');
-                                });
                         });
                     } else {
                         console.error(err);
@@ -116,5 +141,6 @@ export function restoreTab() {
 }
 
 module.exports.newTab = newTab;
+module.exports.onDrop = onDrop;
 module.exports.onDestroy = onDestroy;
 module.exports.restoreTab = restoreTab;
