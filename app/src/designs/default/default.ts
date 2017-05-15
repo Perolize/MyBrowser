@@ -20,12 +20,11 @@ document.querySelector(".new-tab").addEventListener("click", e => {
 export function addWebviewListeners(wv: any) {
     wv.addEventListener('new-window', () => {
         reorderTabs($('.nav-link.active'), 'both');
-        console.log('hi')
     });
 }
 
 export function onTabCreated(id: Number = undefined) {
-    reorderTabs($('.tabs li.active'), 'both');
+    reorderTabs($(`.tabs li[data-id="${id}"]`), 'both');
 }
 
 function onClickTab(e: any) {
@@ -41,13 +40,17 @@ function onClickTab(e: any) {
 }
 
 export function reorderTabs($target: any, side: string) {
+    _reorderTabs($target, side);
+}
+
+export function _reorderTabs($target: any, side: string) {
     let zIndex = 0;
 
     switch (side) {
         case 'left':
             $target.prevAll().each((i: any, item: any) => {
                 $(item).css('z-index', zIndex - 1);
-                $(item).addClass('before');
+                $(item).removeClass('after').addClass('before');
                 zIndex--;
             });
 
@@ -56,7 +59,7 @@ export function reorderTabs($target: any, side: string) {
             $target.nextAll().each((i: any, item: any) => {
                 if ($(item).hasClass('nav-item')) {
                     $(item).css('z-index', zIndex - 1);
-                    $(item).addClass('after');
+                    $(item).removeClass('before').addClass('after');
                     zIndex--;
                 }
             });
