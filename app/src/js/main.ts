@@ -241,7 +241,7 @@ export function onClickRemoveTab(e: Event) {
     // let didCreate: any;
     // let activeId: any;
 
-    $(`.tabs li[data-id="${id}"]`).remove();
+    $(`[data-id="${id}"]`).remove();
 
     if ($('.tabs li').length > 0) {
         let largestTime = 0;
