@@ -31,7 +31,7 @@
 </head>
 
 <body>
-
+  <div class="titlebar"></div>
   <div class="navbar">
     <div class="topbar">
       <ul class="tabs">
@@ -116,12 +116,15 @@
 <script src="mybrowser://js/plugins/jquery-ui.min.js"></script>
 <script>
   // You can also require other files to run in this process
+  console.time('jquery')
   require('jquery')
+  console.timeEnd('jquery')
   require('dragula')
+  console.time('main')
   require('./js/main.js')
   require('./js/urlLoad.js')
   require('./js/navbar.js')
-  require('electron-titlebar')
+  console.timeEnd('main')
   require('./js/shortcuts.js')
   require('./js/permissions.js');
   require('./designs/default/default')
@@ -134,6 +137,19 @@
   const selectedSearchEngine = require('./settings').selectedSearchEngine;
   let suggestions;
   let input;
+
+  require('./utils/cache');
+
+  const crashReporter = require('./utils/crash-reporter')
+  crashReporter.init()
+
+  $(document).ready(() => {
+    ipcRenderer.send('ready-init');
+  });
+
+  window.onerror = (msg) => {
+    console.log(msg);
+  }
 
   const searchBar = document.querySelector('.url');
   $(searchBar).after('<input class="searchBar autocomplete" data-list="#autocomplete" hidden>');
