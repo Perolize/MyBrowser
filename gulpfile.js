@@ -5,58 +5,91 @@ const sourcemaps = require('gulp-sourcemaps');
 const typescript = require('gulp-typescript');
 const tslint = require('gulp-tslint');
 const sequence = require('run-sequence');
+const uglify = require('uglify-js-harmony');
+const concat = require('gulp-concat');
+const minifier = require('gulp-uglify/minifier');
+const imagemin = require('gulp-imagemin');
+const minifyCss = require('gulp-clean-css');
+const htmlMin = require('gulp-html-minifier');
 
 const del = require('del');
-const electron = require('electron-connect').server.create();
 
-const tscConfig = require('./src/tsconfig.json');
+const options = {
+    src: 'app/src',
+    dist: 'app/dist'
+}
+
+const tscConfig = require(`./${options.src}/tsconfig.json`);
 
 gulp.task('clean', function () {
-    return del('dist/**/*');
+    return del(`${options.dist}/**/*`);
 });
 
 gulp.task('compile', function () {
-    return gulp
-        .src(['src/*/*.ts', 'src/**/*.ts'])
+    gulp
+        .src([`${options.src}/*/*.ts`, `${options.src}/**/*.ts`, `!${options.src}/main.ts`])
         .pipe(sourcemaps.init())          // <--- sourcemaps
         .pipe(typescript(tscConfig.compilerOptions))
+        .pipe(minifier({ preserveComments: 'license' }, uglify))
+        // .pipe(concat('app.min.js'))
         .pipe(sourcemaps.write('.'))      // <--- sourcemaps
-        .pipe(gulp.dest('dist'));
-});
-
-gulp.task('copy:libs', function () {
-    return gulp.src([
-        'node_modules/core-js/client/shim.min.js',
-        'node_modules/zone.js/dist/zone.js',
-        'node_modules/systemjs/dist/system.src.js',
-    ])
-        .pipe(gulp.dest('dist/lib'))
+        .pipe(gulp.dest(options.dist));
+    gulp
+        .src(`${options.src}/main.ts`)
+        .pipe(sourcemaps.init())          // <--- sourcemaps
+        .pipe(typescript(tscConfig.compilerOptions))
+        .pipe(minifier({ preserveComments: 'license' }, uglify))
+        .pipe(sourcemaps.write('.'))      // <--- sourcemaps
+        .pipe(gulp.dest(options.dist));
 });
 
 gulp.task('copy:assets', function () {
-    return gulp.src(['src/**/*', 'src/index.html', 'src/style.css', '!src/**/*.ts', 'src/*.js', '!src/*.json'], { base: './src' })
-        .pipe(gulp.dest('dist'))
+    return gulp.src([`${options.src}/**/*`, `!${options.src}/index.html`, `!${options.src}/**/*.html`, `!${options.src}/**/*.ts`, `${options.src}/*.js`, `!${options.src}/*.json`, `!${options.src}/img`, `!${options.src}/*.css`, `!${options.src}/**/*.css`, `!${options.src}/**/**/*.css`], { base: options.src })
+        .pipe(gulp.dest(options.dist))
+});
+
+gulp.task('copy:img', () => {
+    return gulp
+        .src([`${options.src}/img/*`, `!${options.src}/img/*.psd`])
+        .pipe(imagemin())
+        .pipe(gulp.dest(`${options.dist}/img`))
+});
+
+gulp.task('copy:css', () => {
+    return gulp
+        .src([`${options.src}/style.css`, `${options.src}/**/*.css`, `${options.src}/**/**/*.css`])
+        .pipe(minifyCss())
+        .pipe(gulp.dest(options.dist))
+});
+
+gulp.task('copy:html', () => {
+    return gulp
+        .src([`${options.src}/index.html`, `${options.src}/**/*.html`, `${options.src}/**/**/*.html`])
+        .pipe(htmlMin({collapseWhitespace: true}))
+        .pipe(gulp.dest(options.dist))
 });
 
 gulp.task('tslint', function () {
-    return gulp.src('src/**/*.ts')
-        .pipe(tslint({formatter: "verbose"}))
+    return gulp.src(`${options.src}/**/*.ts`)
+        .pipe(tslint({ formatter: "verbose" }))
         .pipe(tslint.report());
 });
 
-gulp.task('serve', function () {
-    electron.start();
-    gulp.watch('./src/main.ts').on('change', function() {
-        sequence('copy:assets', 'compile', electron.restart);
-    }); 
-    gulp.watch('./src/**/*.*').on('change', function() {
-        sequence('copy:assets', 'compile', electron.reload);
-    });
-    gulp.watch('./src/*.*').on('change', function() {
-        sequence('copy:assets', 'compile', electron.reload);
-    });
+// gulp.task('serve', function () {
+//     electron.start();
+//     gulp.watch(`./${options.src}/main.ts`).on('change', function () {
+//         sequence('clean', 'build', electron.restart);
+//     });
+//     gulp.watch(`./${options.src}/**/*.*`).on('change', function () {
+//         sequence('clean', 'build', electron.reload);
+//     });
+//     gulp.watch(`./${options.src}/*.*`).on('change', function () {
+//         sequence('clean', 'build', electron.reload);
+//     });
+// });
+
+gulp.task('build', ['compile', 'copy:assets', 'copy:img', 'copy:css', 'copy:html']);
+
+gulp.task('default', () => {
+    sequence('clean', 'build')
 });
-
-gulp.task('build', ['compile', 'copy:libs', 'copy:assets']);
-
-gulp.task('default', ['build', 'serve']);

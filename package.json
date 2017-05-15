@@ -5,7 +5,7 @@
   "main": "./app/dist/main.js",
   "scripts": {
     "build:watch": "tsc -p app/src/ -w",
-    "start": "npm run movesssets && concurrently \"npm run build:watch\" \"electron .\" \"npm run watchassets\" \"npm run watchassets2\" ",
+    "start": "gulp",
     "movesssets": "cpx \"app/src/*.{html,css}\" app/dist && cpx \"app/src/**/*.{html,css}\" app/dist &&  cpx \"app/src/**/*.{js,js.map}\" app/dist",
     "watchassets": "onchange \"app/src/**/*.css\" \"app/src/**/*.html\" -e \"app/dist/*\" -v -- cpx \"app/src/**/*.{html,css}\" app/dist",
     "watchassets2": "onchange \"app/src/*.css\" \"app/src/*.html\" -e \"app/dist/*\" -v -- cpx \"app/src/*.{html,css}\" app/dist",
@@ -16,6 +16,7 @@
     "dist": "build -w --x64 --ia32",
     "postinstall": "install-app-deps"
   },
+  "start": "npm run movesssets && concurrently \"npm run build:watch\" \"electron .\" \"npm run watchassets\" \"npm run watchassets2\" ",
   "repository": "https://github.com/Perolize/MyBrowser",
   "keywords": [
     "MyBrowser",
@@ -35,13 +36,19 @@
     "electron-connect": "^0.6.1",
     "electron-packager": "^8.6.0",
     "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-html-minifier": "^0.1.8",
+    "gulp-imagemin": "^3.2.0",
     "gulp-sourcemaps": "^2.4.1",
     "gulp-tslint": "^7.1.0",
     "gulp-typescript": "^3.1.4",
+    "gulp-uglify": "^2.1.2",
     "onchange": "^3.2.1",
     "run-sequence": "^1.2.2",
     "tslint": "^4.5.1",
-    "typescript": "~2.0.10"
+    "typescript": "~2.0.10",
+    "uglify-js-harmony": "^2.7.7"
   },
   "dependencies": {
     "del": "^2.2.2",
