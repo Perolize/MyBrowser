@@ -14,9 +14,24 @@ const url = require('url')
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow: any;
 
+require('./utils/cache');
+
+const crashReporter = require('./utils/crash-reporter')
+crashReporter.init()
+
+process.on('uncaughtException', (err: any) => {
+  console.log(err);
+});
+
 function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 800, height: 600, frame: false, icon: path.join(__dirname, 'img/logo-2.png') });
+  mainWindow = new BrowserWindow({ width: 800, height: 600, frame: false, icon: path.join(__dirname, 'img/logo-2.png'), backgroundColor: '#f5f5f5' });
+
+  console.time('init');
+
+  ipcMain.on('ready-init', (e: any) => {
+    console.timeEnd('init')
+  });
 
   protocol.registerFileProtocol('mybrowser', (req, cb) => {
     const fullUrl = path.normalize(`${__dirname}/pages/${req.url.substr(12)}.html`);
@@ -81,7 +96,7 @@ function createWindow() {
   //     }
   //   });
   // });
-  
+
   ipcMain.on('new-window', (e: any, msg: any) => {
     createNewWindow(msg || undefined);
   });
@@ -143,6 +158,10 @@ function createWindow() {
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
+
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
@@ -154,7 +173,7 @@ function createWindow() {
 
 function createNewWindow(tabUrl = 'mybrowser://blank') {
   // Create the browser window.
-  let newWin = new BrowserWindow({ width: 800, height: 600, frame: false, icon: path.join(__dirname, 'img/logo-2.png') });
+  let newWin = new BrowserWindow({ width: 800, height: 600, frame: false, icon: path.join(__dirname, 'img/logo-2.png'), show: false, backgroundColor: '#f5f5f5' });
 
   // and load the index.html of the app.
   newWin.loadURL(url.format({
@@ -227,6 +246,10 @@ function createNewWindow(tabUrl = 'mybrowser://blank') {
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
+
+  newWin.once('ready-to-show', () => {
+    newWin.show();
+  });
 
   // Emitted when the window is closed.
   newWin.on('closed', function () {

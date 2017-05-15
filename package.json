@@ -50,6 +50,7 @@
     "electron-updater": "^1.11.2",
     "is-url": "^1.2.2",
     "jquery": "^3.1.1",
+    "lru-cache": "^4.0.2",
     "normalize-url": "^1.9.1",
     "tldjs": "^1.7.0"
   }
