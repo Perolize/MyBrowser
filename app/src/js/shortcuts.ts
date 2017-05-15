@@ -109,6 +109,52 @@ Mousetrap.bind(['ctrl+w', 'command+w', 'ctrl+f4', 'command+f4'], (e: any) => {
     $(`webview[data-id="${nextTab.attr('data-id')}"]`).addClass('active');
 });
 
+Mousetrap.bind(['alt+left', 'backspace'], () => {
+    document.querySelector(`.pages webview.active`).goBack();
+});
+
+Mousetrap.bind(['alt+right', 'shift+backspace'], () => {
+    document.querySelector(`.pages webview.active`).goForward();
+});
+
+Mousetrap.bind(['ctrl+f5'], () => {
+    document.querySelector(`.pages webview.active`).reloadIgnoringCache();
+});
+
+Mousetrap.bind(['esc'], () => {
+    document.querySelector(`.pages webview.active`).stop();
+});
+
+Mousetrap.bind(['alt+home'], () => {
+    document.querySelector(`.pages webview.active`).loadURL('mybrowser://blank');
+});
+
+Mousetrap.bind(['f11'], () => {
+    if (!remote.getCurrentWindow().isFullScreen()) {
+        $('.navbar').css('margin-top', '-5rem');
+        $('.pages').css('height', '100vh');
+    } else {
+        $('.navbar').css('margin-top', '');
+        $('.pages').css('height', '');
+    }
+});
+
+$('.titlebar').mouseenter(() => {
+    if (remote.getCurrentWindow().isFullScreen()) {
+        $('.titlebar').css('height', '5rem');
+        $('.navbar').css('margin-top', '');
+        $('.pages').css('height', '');
+    }
+});
+$('.titlebar').mouseleave( () => {
+    if (remote.getCurrentWindow().isFullScreen()) {
+        $('.titlebar').css('height', '');
+        $('.navbar').css('margin-top', '-5rem');
+        $('.pages').css('height', '100vh');
+    }
+});
+
+
 Mousetrap.bind(['ctrl+1', 'command+1'], () => {
     const activeTab = document.querySelector('.tabs li.active');
     let nextTab = $('.tabs li.nav-item:eq(0)');
