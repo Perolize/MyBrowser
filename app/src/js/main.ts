@@ -1,4 +1,5 @@
 import { remote, ipcMain } from 'electron';
+import * as EventEmitter from 'events';
 import * as isUrl from 'is-url';
 import * as normalizeUrl from 'normalize-url';
 import * as tabs from './tab';
@@ -87,7 +88,7 @@ $('.nav-item .audio').on('click', onClickAudio);
 $(".nav-item .tab-close").on("click", onClickRemoveTab);
 
 document.querySelector(".new-tab").addEventListener("click", e => {
-    if (!e.defaultPrevented) {
+    if (!e.defaultPrevented && !$('.new-tab').hasClass('disabled')) {
         tabs.newTab();
     }
 });
@@ -250,6 +251,31 @@ export function onClickRemoveTab(e: Event) {
         $('.tabs li.active').removeClass('active');
         $('.pages webview.active').removeClass('active');
         $(`[data-id="${currentId}"]`).addClass('active');
+
+        $('.tabs .nav-item').removeClass('before');
+        $('.tabs .nav-item').removeClass('after');
+
+        $(`.tabs li[data-id="${currentId}"]`).prev().addClass('before');
+        if ($(`.tabs li[data-id="${currentId}"]`).next().hasClass('nav-item')) {
+            $(`.tabs li[data-id="${currentId}"]`).next().addClass('after');
+        }
+
+        if (isTyping) {
+            input = $('.navigation .url').text();
+        }
+
+        if ($(`webview[data-id=${currentId}]`).attr('input') !== (undefined || '')) {
+            setTimeout(() => {
+                $('.navigation .url').text($(`webview[data-id=${currentId}]`).attr('input'));
+            }, 3);
+
+            isTyping = true;
+        } else {
+            isTyping = false;
+        }
+
+        webview.setTitle(currentId)
+        webview.onNavigating(currentId);
 
         largestTime = 0;
         currentId = 0;
