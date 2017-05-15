@@ -25,6 +25,8 @@ export function newTab(tabUrl = 'mybrowser://blank', open: boolean = true, id: a
         }
     }
 
+    $(`.tabs .nav-item[data-id="${id}"]`).attr('time', Date.now())
+
     $(`.tabs .nav-item[data-id="${id}"]`).on('click', main.onClickTab);
     $(`.tabs .nav-item[data-id="${id}"] .audio`).on('click', main.onClickAudio);
     $(".nav-item .tab-close").on("click", main.onClickRemoveTab);

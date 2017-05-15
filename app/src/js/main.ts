@@ -190,6 +190,8 @@ export function onClickTab(e: any) {
                 $(this).next().addClass('after');
             }
 
+            $(this).attr('time', Date.now())
+
             if (isTyping) {
                 input = $('.navigation .url').text();
             }
@@ -234,91 +236,113 @@ export function onClickRemoveTab(e: Event) {
     const target = e.target as HTMLElement;
     const id = parseInt(target.parentElement.parentElement.getAttribute('data-id'));
 
-    let before: any;
-    let after: any;
-    let didCreate: any;
-    let activeId: any;
+    // let before: any;
+    // let after: any;
+    // let didCreate: any;
+    // let activeId: any;
 
-    $(`.new-tab`).addClass('lol').removeClass('lol').promise()
-        .then(() => {
-            before = document.querySelector(`li[data-id="${id}"]`).previousElementSibling;
-            after = document.querySelector(`li[data-id="${id}"]`).nextElementSibling;
+    $(`.tabs li[data-id="${id}"]`).remove();
 
-            didCreate = (before === null && after === document.querySelector('.new-tab'));
+    if ($('.tabs li').length > 0) {
+        let largestTime = 0;
+        let currentId = 0;
 
-            $(`.tabs li[data-id="${id}"]`).off();
-        })
-        .then(() => {
-            $(`[data-id="${id}"]`).remove();
-            if ($('.tabs .nav-item.active').length > 0) {
-                activeId = $('.tabs .nav-item.active').attr('data-id');
-            }
-            // $('.tabs .nav-item').removeClass('active');
-        })
-        .then(() => {
-            if (didCreate) {
-                console.log(after === null, before === null)
-                console.log(didCreate)
-                // createNewTab(id);
-                remote.getCurrentWindow().close();
-
-                return;
-            }
-
-            if (before !== null) {
-                const newId = before.getAttribute('data-id');
-                $(`[data-id="${newId}"]`).addClass('active').promise()
-                    .then(() => {
-                        $('.tabs .nav-item').removeClass('before');
-                        $('.tabs .nav-item').removeClass('after');
-                    })
-                    .then(() => {
-                        $('.tabs .nav-item.active').prev().addClass('before');
-                        if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
-                            $('.tabs .nav-item.active').next().addClass('after');
-                        }
-                    })
-                    // .then(() => {
-                    //     $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
-                    //     $(".nav-item .tab-close").on("click", onClickRemoveTab);
-                    // })
-                    .then(() => {
-                        webview.setTitle(parseInt(newId));
-                        webview.onNavigating(parseInt(newId));
-                    });
-
-                return;
-            } else if (after !== null && before !== document.querySelector('.new-tab')) {
-                const newId = after.getAttribute('data-id');
-                $(`[data-id="${newId}"]`).addClass('active').promise()
-                    .then(() => {
-                        $('.tabs .nav-item').removeClass('before');
-                        $('.tabs .nav-item').removeClass('after');
-                    })
-                    .then(() => {
-                        $('.tabs .nav-item.active').prev().addClass('before');
-                        if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
-                            $('.tabs .nav-item.active').next().addClass('after');
-                        }
-                    })
-                    // .then(() => {
-                    //     $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
-                    //     $(".nav-item .tab-close").on("click", onClickRemoveTab);
-                    // })
-                    .then(() => {
-                        webview.setTitle(parseInt(newId));
-                        webview.onNavigating(parseInt(newId));
-                    });
-
-                return;
-            }
-        })
-        .then(() => {
-            if ($('.tabs .nav-item.active').length > 1) {
-                $(`.tabs .nav-item`).removeClass('active');
-                $(`.tabs .nav-item[data-id="${activeId}"]`).addClass('active');
-            }
+        $(`.tabs li`).each((i: any) => {
+            const time = parseInt($(`.tabs li:eq("${i}")`).attr('time')) || 0;
+            largestTime = time > largestTime ? time : largestTime;
+            currentId = time >= largestTime ? parseInt($(`.tabs li:eq("${i}")`).attr('data-id')) : currentId;
         });
+
+        $('.tabs li.active').removeClass('active');
+        $('.pages webview.active').removeClass('active');
+        $(`[data-id="${currentId}"]`).addClass('active');
+
+        largestTime = 0;
+        currentId = 0;
+    } else {
+        remote.getCurrentWindow().close();
+    }
+
+    // $(`.new-tab`).addClass('lol').removeClass('lol').promise()
+    //     .then(() => {
+    //         before = document.querySelector(`li[data-id="${id}"]`).previousElementSibling;
+    //         after = document.querySelector(`li[data-id="${id}"]`).nextElementSibling;
+
+    //         didCreate = (before === null && after === document.querySelector('.new-tab'));
+
+    //         $(`.tabs li[data-id="${id}"]`).off();
+    //     })
+    //     .then(() => {
+    //         $(`[data-id="${id}"]`).remove();
+    //         if ($('.tabs .nav-item.active').length > 0) {
+    //             activeId = $('.tabs .nav-item.active').attr('data-id');
+    //         }
+    //         // $('.tabs .nav-item').removeClass('active');
+    //     })
+    //     .then(() => {
+    //         if (didCreate) {
+    //             console.log(after === null, before === null)
+    //             console.log(didCreate)
+    //             // createNewTab(id);
+    //             remote.getCurrentWindow().close();
+
+    //             return;
+    //         }
+
+    //         if (before !== null) {
+    //             const newId = before.getAttribute('data-id');
+    //             $(`[data-id="${newId}"]`).addClass('active').promise()
+    //                 .then(() => {
+    //                     $('.tabs .nav-item').removeClass('before');
+    //                     $('.tabs .nav-item').removeClass('after');
+    //                 })
+    //                 .then(() => {
+    //                     $('.tabs .nav-item.active').prev().addClass('before');
+    //                     if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
+    //                         $('.tabs .nav-item.active').next().addClass('after');
+    //                     }
+    //                 })
+    //                 // .then(() => {
+    //                 //     $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
+    //                 //     $(".nav-item .tab-close").on("click", onClickRemoveTab);
+    //                 // })
+    //                 .then(() => {
+    //                     webview.setTitle(parseInt(newId));
+    //                     webview.onNavigating(parseInt(newId));
+    //                 });
+
+    //             return;
+    //         } else if (after !== null && before !== document.querySelector('.new-tab')) {
+    //             const newId = after.getAttribute('data-id');
+    //             $(`[data-id="${newId}"]`).addClass('active').promise()
+    //                 .then(() => {
+    //                     $('.tabs .nav-item').removeClass('before');
+    //                     $('.tabs .nav-item').removeClass('after');
+    //                 })
+    //                 .then(() => {
+    //                     $('.tabs .nav-item.active').prev().addClass('before');
+    //                     if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
+    //                         $('.tabs .nav-item.active').next().addClass('after');
+    //                     }
+    //                 })
+    //                 // .then(() => {
+    //                 //     $(`.tabs .nav-item[data-id="${id}"]`).on('click', onClickTab);
+    //                 //     $(".nav-item .tab-close").on("click", onClickRemoveTab);
+    //                 // })
+    //                 .then(() => {
+    //                     webview.setTitle(parseInt(newId));
+    //                     webview.onNavigating(parseInt(newId));
+    //                 });
+
+    //             return;
+    //         }
+    //     })
+    //     .then(() => {
+    //         if ($('.tabs .nav-item.active').length > 1) {
+    //             $(`.tabs .nav-item`).removeClass('active');
+    //             $(`.tabs .nav-item[data-id="${activeId}"]`).addClass('active');
+    //         }
+    //     });
 }
 
 function getURL() {
