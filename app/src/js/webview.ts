@@ -310,7 +310,6 @@ export function onNavigating(id: Number = undefined, e: any = undefined) {
     }
 
     setTimeout(() => {
-        console.log(main.isTyping)
         if (!main.isTyping) {
             $('.navigation .url').text(page.getAttribute('src'));
             urlModule.styleUrl()
@@ -434,7 +433,6 @@ export function onOpenView(id: Number = undefined) {
 
     wv.addEventListener('ipc-message', (e: any) => {
         if (e.channel === 'webviewId' && !wv.hasAttribute('loaded')) {
-            console.log('got')
             wv.send(e.channel, wv.getAttribute('data-id'));
             wv.setAttribute('loaded', '');
         }
@@ -456,7 +454,6 @@ export function onShow(id: Number = undefined) {
 
     wv.addEventListener('ipc-message', (e: any) => {
         if (e.channel === 'show') {
-            console.log('received')
             const id = parseInt(wv.getAttribute('data-id'));
 
             $('.tabs .nav-item.active').removeClass('active');
@@ -488,8 +485,6 @@ export function onAskPermission(id: Number = undefined) {
 
     wv.getWebContents().session.setPermissionRequestHandler((webContents: any, permission: any, callback: any) => {
         const url = tld.getDomain(wv.getURL());
-
-        console.log(grantedSites, deniedSites)
 
         const grant = grantedSites.indexOf(url) > -1;
         const deny = deniedSites.indexOf(url) > -1;
@@ -550,7 +545,6 @@ export function addToHistory(id: Number = undefined) {
                                             history.push({ url: url, title: title, page: `mybrowser://history/img/${title}-${date}.png`, date: date });
 
                                             console.log(history.indexOf({ url: url, title: title, page: `mybrowser://history/img/${title}-${date}.png`, date: date }), history)
-                                            console.log(added)
                                         }
                                     });
                                 }

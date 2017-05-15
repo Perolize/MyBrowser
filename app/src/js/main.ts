@@ -172,8 +172,6 @@ export function createNewTab(id: number, url: string = 'mybrowser://blank') {
 export function onClickTab(e: any) {
     const id = parseInt($(this).attr('data-id'));
 
-    console.log(!$(e.target).is(`.tabs li[data-id="${id}"] a.audio`), $(`.tabs li[data-id="${id}"] a.audio`).has(e.target).length <= 0, $(`.tabs li[data-id="${id}"] a.audio`).has(e.target).length)
-
     if (!$(e.target).is(`.tabs li[data-id="${id}"] a.audio`) && $(`.tabs li[data-id="${id}"] a.audio`).has(e.target).length <= 0) {
         if (id !== parseInt($('.tabs li.active').attr('data-id'))) {
 
@@ -197,8 +195,6 @@ export function onClickTab(e: any) {
             }
 
             if ($(`webview[data-id=${id}]`).attr('input') !== (undefined || '')) {
-                console.log($(`webview[data-id=${id}]`).attr('input'))
-
                 setTimeout(() => {
                     $('.navigation .url').text($(`webview[data-id=${id}]`).attr('input'));
                 }, 3);
@@ -219,12 +215,10 @@ export function onClickAudio(e: any) {
     if (parseInt(e.target.parentElement.parentElement.getAttribute('data-id')) !== undefined) {
         id = parseInt(e.target.parentElement.parentElement.getAttribute('data-id'));
     } else {
-        console.log(e.target)
         id = parseInt(e.target.parentElement.parentElement.parentElement.getAttribute('data-id'));
     }
     const page = document.querySelector(`.pages .page[data-id="${id}"]`) as any;
     const target = document.querySelector(`.tabs li[data-id="${id}"] .audio i`) as HTMLElement;
-    console.log(target)
 
     target.parentElement.classList.toggle('muted');
     target.classList.toggle('fa-volume-up');
