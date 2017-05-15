@@ -1,4 +1,4 @@
-const electron = require('electron')
+const electron = require('electron');
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
@@ -8,6 +8,7 @@ const ipcRenderer = electron.ipcRenderer;
 const protocol = electron.protocol
 
 const path = require('path')
+const del = require('del')
 const url = require('url')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -273,6 +274,11 @@ app.on('window-all-closed', function () {
     app.quit()
   }
 })
+
+app.on('will-quit', () => {
+  del(path.join(app.getPath('userData'), './temp/**'), { force: true });
+  console.log(path.join(app.getPath('userData'), './temp/**'))
+});
 
 app.on('activate', function () {
   // On OS X it's common to re-create a window in the app when the
