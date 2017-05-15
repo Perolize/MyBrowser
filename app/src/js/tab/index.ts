@@ -27,9 +27,8 @@ tabs.on('drop', onDrop);
 
 export function newTab(tabUrl = 'mybrowser://blank', open: boolean = true, id: any = parseInt($('.new-tab').prev().attr('data-id')) + 1, callback: any = undefined) {
     const tabLI = `<li class="nav-item ${open ? 'active' : ''}" data-id="${id}"><span class="fa fa-spinner"></span><img class="favicon" draggable="false" /><a class="nav-link">Blank</a><a class="audio"><i class="fa fa-volume-up"></i></a><a class="tab-close"><i class="fa fa-times"></i></a></li>`;
-    const page = `<webview class="page ${open ? 'active' : ''}" src="${tabUrl}" data-id="${id}"></webview>`
-
-    const wv = document.querySelector('webview.active');
+    const page = `<webview class="page ${open ? 'active' : ''}" src="${tabUrl}" data-id="${id}"></webview>`;
+    const $tabs = $('.tabs li');
 
     if (open) {
         $('.tabs .nav-item').removeClass('active');
@@ -37,6 +36,10 @@ export function newTab(tabUrl = 'mybrowser://blank', open: boolean = true, id: a
     }
     $(tabLI).insertBefore(`.new-tab`);
     $('.pages').append(page);
+
+    if ($tabs.length >= 22) {
+        $('.new-tab').addClass('disabled');
+    }
 
     if (open) {
         $('.tabs .nav-item').removeClass('before');
@@ -75,18 +78,34 @@ export function onDrop(tab: any) {
         $(`.tabs li:eq(${i})`).attr('pos', i);
     });
 
+    const id = $(tab).attr('data-id');
+
     custom.reorderTabs($(tab), 'both')
 
     if (!$(tab).hasClass('active')) {
         $('.tabs li.active').removeClass('active');
-        $(tab).addClass('active');
+        $('.pages webview.active').removeClass('active');
+        $(`[data-id="${id}"]`).addClass('active');
+
+        $('.tabs .nav-item').removeClass('before');
+        $('.tabs .nav-item').removeClass('after');
+
+        $(`.tabs li[data-id="${id}"]`).prev().addClass('before');
+        if ($(`.tabs li[data-id="${id}"]`).next().hasClass('nav-item')) {
+            $(`.tabs li[data-id="${id}"]`).next().addClass('after');
+        }
     }
 }
 
 export function onDestroy(wv: any, tab: any) {
     const id = wv.getAttribute('data-id');
     const pos = tab.getAttribute('pos');
+    const $tabs = $('.tabs li');
     const url = wv.src;
+
+    if ($tabs.length <= 23) {
+        $('.new-tab').removeClass('disabled');
+    }
 
     storage.isPathExists('temp/closedTabs.json')
         .then((itDoes: boolean) => {
@@ -127,6 +146,8 @@ export function restoreTab() {
                             $('.tabs li').each((i: any) => {
                                 $(`.tabs li:eq(${i})`).attr('pos', i);
                             });
+
+                            custom.reorderTabs($(this), 'both');
 
                             data.tabs.pop()
 

@@ -248,6 +248,11 @@ li.nav-item:not(.active):hover a.tab-close,
     cursor: pointer;
 }
 
+.topbar .tabs a.new-tab.disabled {
+    cursor: default;
+    color: #b1b1b1;
+}
+
 .topbar .win-controls {
     display: flex;
     margin: 0;
