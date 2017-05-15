@@ -7,6 +7,7 @@ export function requestPermission(permission: string, site: string) {
 
         $('.permission h1').html(permission);
         $('.permission p span.website').html(site);
+        $('.permission').css('display', '');
         switch (permission.toLowerCase()) {
             case 'fullscreen':
                 $('.permission p span.perm').html('maximize window');
@@ -17,7 +18,9 @@ export function requestPermission(permission: string, site: string) {
             case 'geolocation':
                 $('.permission p span.perm').html('use your location');
         }
-        $('.permission').css('left', '0');
+        setTimeout(() => {
+            $('.permission').css('left', '0');
+        }, 1);
 
         $('.permission .btns .btn:not(.allow)').on('click', () => {
             fulfill(false);
