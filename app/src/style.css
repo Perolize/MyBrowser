@@ -826,16 +826,17 @@ span.searchOn {
 }
 
 .pages .page {
-    display: none;
+    display: flex;
     height: 100%;
     width: 100%;
     outline: none;
     position: absolute;
     user-select: initial;
+    visibility: hidden;
 }
 
 .pages .page.active {
-    display: flex;
+    visibility: visible;
 }
 
 .pages webview.error {

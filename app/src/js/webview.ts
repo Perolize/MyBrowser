@@ -34,7 +34,7 @@ export function onWebViewCreated(id: Number = undefined) {
 
     wv.addEventListener('new-window', (e: any) => {
         if (!e.defaultPrevented) {
-            tabs.newTab(e.url || e.detail, false)
+            tabs.newTab(e.url || e.detail, false);
         }
     });
 
@@ -47,7 +47,7 @@ export function onWebViewCreated(id: Number = undefined) {
         addListenerForFavicon(id);
         onAskPermission(id);
         if (!isLoaded) {
-            (document.querySelector('.pages .page.active') as any).reload();
+            // wv.reload();
             isLoaded = true;
             added = false;
         }
@@ -98,8 +98,10 @@ export function onWebViewCreated(id: Number = undefined) {
 
     wv.addEventListener('did-start-loading', (e: any) => {
         if (!e.defaultPrevented) {
+            const id = wv.getAttribute('data-id');
+
             $('.navigation .refresh').val('');
-            $('.nav-item.active').addClass('loading');
+            $(`.nav-item[data-id="${id}"]`).addClass('loading');
 
             wv.removeAttribute('loaded');
         }
@@ -109,8 +111,10 @@ export function onWebViewCreated(id: Number = undefined) {
 
     wv.addEventListener('did-stop-loading', (e: any) => {
         if (!e.defaultPrevented) {
+            const id = wv.getAttribute('data-id');
+
             $('.navigation .refresh').val('');
-            $('.nav-item.active').removeClass('loading');
+            $(`.nav-item[data-id="${id}"]`).removeClass('loading');
 
             // $.get('https://twemoji.maxcdn.com/2/twemoji.min.js', (script: any) => {
             //     wv.executeJavaScript(script);
@@ -154,8 +158,10 @@ export function setURL(id: Number = undefined) {
     }
 
     const url = wv.getURL() || 'mybrowser://blank';
-    $('.bottombar .navigation .url').html(url)
-    urlModule.styleUrl();
+    if (wv.classList.contains('active')) {
+        $('.bottombar .navigation .url').html(url)
+        urlModule.styleUrl();
+    }
 }
 
 export function setTitle(id: Number = undefined) {
@@ -164,6 +170,7 @@ export function setTitle(id: Number = undefined) {
         wv = document.querySelector(`.pages webview[data-id="${id}"]`) as any;
     } else {
         wv = document.querySelector('.pages webview.active') as any;
+        id = wv.getAttribute('data-id');
     }
 
     // if (wv.isLoading()) {
@@ -172,7 +179,7 @@ export function setTitle(id: Number = undefined) {
     // } else {
     const title: string = wv.getTitle();
     document.title = `${title} - MyBrowser`;
-    $('.tabs .nav-item.active .nav-link').text(title)
+    $(`.tabs .nav-item[data-id="${id}"] .nav-link`).text(title)
 
     setURL(id);
     urlModule.isSecure();

@@ -29,9 +29,11 @@ export function addWebviewListeners(wv: any) {
     wv.addEventListener('did-start-loading', (e: any) => {
         e.preventDefault();
 
+        const id = wv.getAttribute('data-id');
+
         $('.navigation .refresh').css('display', 'none');
         $('.navigation input.loading').css('display', '');
-        $('.nav-item.active').addClass('loading');
+        $(`.nav-item[data-id="${id}"]`).addClass('loading');
 
         wv.removeAttribute('loaded');
     });
@@ -39,9 +41,11 @@ export function addWebviewListeners(wv: any) {
     wv.addEventListener('did-stop-loading', (e: any) => {
         e.preventDefault();
 
+        const id = wv.getAttribute('data-id');
+
         $('.navigation .refresh').css('display', '');
         $('.navigation input.loading').css('display', 'none');
-        $('.nav-item.active').removeClass('loading');
+        $(`.nav-item[data-id="${id}"]`).removeClass('loading');
     });
 }
 
