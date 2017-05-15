@@ -5,7 +5,7 @@
   "main": "./app/dist/main.js",
   "scripts": {
     "build:watch": "tsc -p app/src/ -w",
-    "start": "gulp",
+    "start": "gulp && electron .",
     "movesssets": "cpx \"app/src/*.{html,css}\" app/dist && cpx \"app/src/**/*.{html,css}\" app/dist &&  cpx \"app/src/**/*.{js,js.map}\" app/dist",
     "watchassets": "onchange \"app/src/**/*.css\" \"app/src/**/*.html\" -e \"app/dist/*\" -v -- cpx \"app/src/**/*.{html,css}\" app/dist",
     "watchassets2": "onchange \"app/src/*.css\" \"app/src/*.html\" -e \"app/dist/*\" -v -- cpx \"app/src/*.{html,css}\" app/dist",
