@@ -47,6 +47,7 @@
     "del": "^2.2.2",
     "dragula": "^3.7.2",
     "electron-is-dev": "^0.1.2",
+    "electron-storage": "^1.0.7",
     "electron-updater": "^1.11.2",
     "is-url": "^1.2.2",
     "jquery": "^3.1.1",
