@@ -103,6 +103,8 @@ export function onWebViewCreated(id: Number = undefined) {
 
             wv.removeAttribute('loaded');
         }
+
+        console.time('webview')
     });
 
     wv.addEventListener('did-stop-loading', (e: any) => {
@@ -116,6 +118,7 @@ export function onWebViewCreated(id: Number = undefined) {
             //     wv.insertCSS('img.emoji { height: 1em; width: 1em; margin: 0 .05em 0 .1em; vertical-align: -0.1em; }');
             // });
         }
+        console.timeEnd('webview')
     });
 
     wv.addEventListener('did-fail-load', (e: any) => {
