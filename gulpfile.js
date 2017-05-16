@@ -75,18 +75,17 @@ gulp.task('tslint', function () {
         .pipe(tslint.report());
 });
 
-// gulp.task('serve', function () {
-//     electron.start();
-//     gulp.watch(`./${options.src}/main.ts`).on('change', function () {
-//         sequence('clean', 'build', electron.restart);
-//     });
-//     gulp.watch(`./${options.src}/**/*.*`).on('change', function () {
-//         sequence('clean', 'build', electron.reload);
-//     });
-//     gulp.watch(`./${options.src}/*.*`).on('change', function () {
-//         sequence('clean', 'build', electron.reload);
-//     });
-// });
+gulp.task('watch', function () {
+    gulp.watch(`./${options.src}/main.ts`).on('change', function () {
+        sequence('clean', 'build');
+    });
+    gulp.watch(`./${options.src}/**/*.*`).on('change', function () {
+        sequence('clean', 'build');
+    });
+    gulp.watch(`./${options.src}/*.*`).on('change', function () {
+        sequence('clean', 'build');
+    });
+});
 
 gulp.task('build', ['compile', 'copy:assets', 'copy:img', 'copy:css', 'copy:html']);
 
