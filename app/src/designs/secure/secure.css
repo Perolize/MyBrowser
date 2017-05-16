@@ -1,0 +1,81 @@
+.navbar.secure .topbar {
+    background: #7fc39c;
+}
+
+.navbar.secure .topbar .tabs li.active,
+body.secure .nav-item.active {
+    background: #67da97;
+    border: 0;
+}
+
+.navbar.secure .topbar .tabs li,
+body.secure .nav-item {
+    background: #51b57b;
+    border: 0;
+}
+
+.navbar.secure .bottombar {
+    background: #67da97;
+    border-bottom-color: #67da97;
+}
+
+.navbar.secure .btn.back:disabled, 
+.navbar.secure .btn.forward:disabled {
+    background: #67da97;
+    color: #e4e4d6;
+}
+
+.navbar.secure .topbar {
+    background: #7fc39c;  
+} 
+
+.navbar.secure .topbar .tabs li.active,
+body.secure .nav-item.active {
+    background: #67da97;  
+}
+
+.navbar.secure .topbar .tabs li,
+body.secure .nav-item {
+    background: #51b57b;  
+}
+
+.navbar.secure .bottombar {
+    background: #67da97;
+    border-bottom-color: #67da97;  
+}
+
+.navbar.secure .btn.back, 
+.navbar.secure .btn.forward {          
+    color: #fff;
+    background: #67da97;
+}
+
+.navbar.secure .topbar .tabs li a.tab-close,
+body.secure .nav-item a.tab-close {
+    color: #fff;
+}
+
+.navbar.secure .topbar .tabs li a.nav-link,
+body.secure .nav-item a.nav-link {
+    color: #fff;
+}
+
+.navbar.secure .topbar .tabs li:before, 
+.navbar.secure .topbar .tabs li:after,
+body.secure .nav-item:before,
+body.secure .nav-item:after {
+    box-shadow: none;
+}
+
+.navbar.secure .topbar .tabs li:not(.active):hover,
+body.secure .nav-item:hover {
+    background: #55ca87;
+}
+
+.navbar.secure .topbar .tabs a.new-tab {
+    color: #fff;
+}
+
+.navbar.secure .bottombar .links .fa {
+    color: #fff;
+}

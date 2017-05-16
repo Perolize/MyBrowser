@@ -46,6 +46,12 @@ win-controls {
     position: relative;
 }
 
+win-controls[platform="linux"] {
+    position: absolute;
+    width: 100%;
+    z-index: 999999999999999999;
+}
+
 .topbar .tabs {
     -webkit-app-region: drag;
     flex: 1 1 0;
@@ -53,6 +59,10 @@ win-controls {
     margin: 0;
     padding: .6rem 0 0 .6rem;
     overflow: auto;
+}
+
+.topbar .tabs.linux {
+    padding-top: 1.5rem;
 }
 
 .topbar .tabs li,

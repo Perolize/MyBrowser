@@ -4,8 +4,8 @@
     <template>
         <style>
              :host,
-            .win32,
-            .linux {
+            #win32,
+            #linux {
                 display: flex;
                 margin: 0;
                 top: 0;
@@ -13,8 +13,19 @@
                 right: 0;
                 width: 140px;
                 height: 29px;
+                position: relative;
             }
-            
+
+            :host([secureMode="on"]) #win32 .button img {
+                -webkit-filter: invert(100%);
+                filter: invert(100%);
+            }
+
+            :host([secureMode="on"]) #linux .button img {
+                -webkit-filter: grayscale(100%) brightness(5);
+                filter: grayscale(100%) brightness(5);
+            }
+
              :host .button {
                 position: absolute;
                 cursor: default;
@@ -22,49 +33,92 @@
                 -webkit-app-region: no-drag;
                 transition: all .1s;
             }
-            
+
              :host .button img {
                 position: absolute;
                 cursor: default;
                 -webkit-app-region: no-drag;
             }
-            
+
+             :host([platform="linux"]),
+             :host([platform="linux"]) #linux {
+                width: 100%;
+            }
+
+             :host([platform="linux"]) #win32 {
+                display: none;
+            }
+
+             :host([platform="linux"]) .button {
+                top: 5px;
+                width: 16px;
+                height: 16px;
+            }
+
+             :host([platform="linux"]) .button:hover {
+                background-color: rgba(196, 196, 196, 0.4);
+            }
+
+             :host([platform="linux"]) .button:active {
+                background-color: rgba(168, 168, 168, 0.5);
+            }
+
+             :host([platform="linux"]) .button-close {
+                left: 5px;
+            }
+
+             :host([platform="linux"]) .button-maximize {
+                right: 5px;
+            }
+
+             :host([platform="linux"]) .button-minimize {
+                right: 28px;
+            }
+
+             :host([platform="win32"]) #linux {
+                display: none;
+            }
+
              :host([platform="win32"]) .button {
                 top: 0px;
                 width: 45px;
                 height: 29px;
             }
-            
+
              :host([platform="win32"]) .button:hover {
-                background: #cecece;
+                background-color: rgba(196, 196, 196, 0.4);
             }
-            
+
+             :host([platform="win32"]) .button:active {
+                background-color: rgba(168, 168, 168, 0.5);
+            }
+
              :host([platform="win32"]) .button-close {
                 right: 0px;
             }
-            
+
              :host([platform="win32"]) .button-close:hover {
                 background: #e81123;
             }
-            
+
              :host([platform="win32"]) .button-close:active {
                 background: rgba(232, 17, 35, 0.6);
             }
-            
+
              :host([platform="win32"]) .button-minimize {
                 right: 90px;
             }
-            
+
              :host([platform="win32"]) .button-maximize {
                 right: 45px;
             }
-            
+
              :host([platform="win32"]) .button img {
                 margin-top: 8.5px;
                 margin-left: 16.5px;
                 transition: all .1s;
             }
-            
+
              :host([platform="win32"]) .button-close:hover img,
              :host([platform="win32"]) .button-close:active img {
                 -webkit-filter: invert(100%);
@@ -74,29 +128,27 @@
 
         <div id="win32">
             <div class="win-cls button-close button" id="winClsWin">
-                <img class="button-img-close" src="../../node_modules/electron-titlebar/titlebar/caption-buttons.svg#close">
+                <img class="button-img-close" src="./img/titlebar/caption-buttons.svg#close">
             </div>
             <div class="win-min button-minimize button" id="winMinWin">
-                <img class="button-img-minimize" src="../../node_modules/electron-titlebar/titlebar/caption-buttons.svg#minimize">
+                <img class="button-img-minimize" src="./img/titlebar/caption-buttons.svg#minimize">
             </div>
             <div class="win-max button-maximize button" id="winMaxWin">
-                <img class="button-img-maximize" src="../../node_modules/electron-titlebar/titlebar/caption-buttons.svg#maximize">
-                <img class="button-img-restore" src="../../node_modules/electron-titlebar/titlebar/caption-buttons.svg#restore"
-                    style="display: none;">
+                <img class="button-img-maximize" src="./img/titlebar/caption-buttons.svg#maximize">
+                <img class="button-img-restore" src="./img/titlebar/caption-buttons.svg#restore" style="display: none;">
             </div>
         </div>
 
         <div id="linux">
             <div class="win-cls button-close button" id="winClsLinux">
-                <img class="button-img-close" src="../../node_modules/electron-titlebar/titlebar/caption-buttons.svg#close">
+                <img class="button-img-close" src="./img/titlebar/close.svg">
             </div>
             <div class="win-min button-minimize button" id="winMinLinux">
-                <img class="button-img-minimize" src="../../node_modules/electron-titlebar/titlebar/caption-buttons.svg#minimize">
+                <img class="button-img-minimize" src="./img/titlebar/minimize.svg">
             </div>
             <div class="win-max button-maximize button" id="winMaxLinux">
-                <img class="button-img-maximize" src="../../node_modules/electron-titlebar/titlebar/caption-buttons.svg#maximize">
-                <img class="button-img-restore" src="../../node_modules/electron-titlebar/titlebar/caption-buttons.svg#restore"
-                    style="display: none;">
+                <img class="button-img-maximize" src="./img/titlebar/maximize.svg">
+                <img class="button-img-restore" src="./img/titlebar/restore.svg" style="display: none;">
             </div>
         </div>
     </template>
@@ -120,14 +172,14 @@
                 const remote = require('electron').remote;
                 const window = remote.getCurrentWindow();
 
-                if (this.platform === 'win32') {
-                    this.$.linux.style.display = "none";
-                } else if (this.platform === 'linux') {
-                    this.$.win32.style.display = "none";
-                } else {
-                    this.$.win32.style.display = "none";
-                    this.$.linux.style.display = "none";
-                }
+                // if (this.platform === 'win32') {
+                //     this.$.linux.style.display = "none";
+                // } else if (this.platform === 'linux') {
+                //     this.$.win32.style.display = "none";
+                // } else {
+                //     this.$.win32.style.display = "none";
+                //     this.$.linux.style.display = "none";
+                // }
 
                 this.$.winMinWin.addEventListener('click', () => { this.minimize() });
                 this.$.winMaxWin.addEventListener('click', () => { this.maximize() });
@@ -216,14 +268,14 @@
         if (WinControls.properties.platform === 'win32') {
             WinControls.innerHTML = `
                 <div class="win-cls button-close button">
-                    <img class="button-img-close" src="../../node_modules/electron-titlebar/titlebar/caption-buttons.svg#close">
+                    <img class="button-img-close" src="../img/titlebar/caption-buttons.svg#close">
                 </div>
                 <div class="win-min button-minimize button">
-                    <img class="button-img-minimize" src="../../node_modules/electron-titlebar/titlebar/caption-buttons.svg#minimize">
+                    <img class="button-img-minimize" src="../img/titlebar/caption-buttons.svg#minimize">
                 </div>
                 <div class="win-max button-maximize button">
-                    <img class="button-img-maximize" src="../../node_modules/electron-titlebar/titlebar/caption-buttons.svg#maximize">
-                    <img class="button-img-restore" src="../../node_modules/electron-titlebar/titlebar/caption-buttons.svg#restore" style="display: none;">
+                    <img class="button-img-maximize" src="../img/titlebar/caption-buttons.svg#maximize">
+                    <img class="button-img-restore" src="../img/titlebar/caption-buttons.svg#restore" style="display: none;">
                 </div>`
         }
         // Register the new element with the browser
