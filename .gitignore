@@ -1,8 +1,6 @@
 .vscode
 node_modules
 dist
-build
-img
-app/src/img/icons/*
+app/src/img/icons
 app/src/img/*.psd
 app/dist
