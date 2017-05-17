@@ -220,7 +220,7 @@ li.nav-item:not(.active):hover a.tab-close,
 .topbar .tabs li a.audio,
 .nav-item a.audio {
     right: 2.5rem;
-    color: #000;
+    color: #666;
 }
 
 .topbar .tabs li a.audio i,
