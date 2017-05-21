@@ -10,13 +10,12 @@ require('./plugins/mousetrap.min.js');
 
 Mousetrap.bind(['ctrl+f', 'command+f'], () => {
     const search = document.querySelector('.search') as HTMLElement;
+    const page = document.querySelector('.pages .page') as HTMLElement;
 
-    if (search.style.display !== 'none') {
-        search.style.display = 'none';
+    if (!search.classList.contains('active')) {
+        animateSearch('show')
     } else {
-        search.style.display = '';
-        (document.querySelector('.search input.searchbox') as HTMLElement).focus();
-        searchInPage();
+        animateSearch('hide')
     }
 });
 
@@ -122,7 +121,7 @@ Mousetrap.bind(['ctrl+f5'], () => {
 });
 
 Mousetrap.bind(['esc'], () => {
-   (document.querySelector(`.pages webview.active`) as any).stop();
+    (document.querySelector(`.pages webview.active`) as any).stop();
 });
 
 Mousetrap.bind(['alt+home'], () => {
@@ -146,7 +145,7 @@ $('.titlebar').mouseenter(() => {
         $('.pages').css('height', '');
     }
 });
-$('.titlebar').mouseleave( () => {
+$('.titlebar').mouseleave(() => {
     if (remote.getCurrentWindow().isFullScreen()) {
         $('.titlebar').css('height', '');
         $('.navbar').css('margin-top', '-5rem');
@@ -568,8 +567,8 @@ document.addEventListener('keydown', e => {
 });
 
 document.addEventListener('keydown', e => {
-    if (e.keyCode === 27 && (document.querySelector('.search') as HTMLInputElement).style.display !== 'none') {
-        (document.querySelector('.search') as HTMLElement).style.display = 'none';
+    if (e.keyCode === 27 && (document.querySelector('.search') as HTMLInputElement).classList.contains('active')) {
+        animateSearch('hide');
         (document.querySelector('webview.active') as any).stopFindInPage('keepSelection');
         (document.querySelector('webview.active') as HTMLElement).focus();
     }
@@ -579,13 +578,18 @@ document.querySelector('.search input.searchbox').addEventListener('input', e =>
     const searchbox = document.querySelector('.search input.searchbox') as HTMLInputElement;
     if (searchbox.value) {
         (document.querySelector('webview.active') as any).findInPage(searchbox.value);
+    } else {
+        (document.querySelector('webview.active') as any).stopFindInPage('keepSelection');
+        (document.querySelector('.search span.matches') as HTMLInputElement).textContent = `No Results`;
+        (document.querySelector('.search input.next') as HTMLInputElement).setAttribute('disabled', '');
+        (document.querySelector('.search input.previous') as HTMLInputElement).setAttribute('disabled', '');
     }
 });
 
 document.querySelector('.search input.searchbox').addEventListener('blur', e => {
     const target = e.target as HTMLElement;
     if (target !== document.querySelector('.search') && !document.querySelector('.search').contains(target)) {
-        (document.querySelector('.search') as HTMLElement).style.display = 'none';
+        animateSearch('hide');
         (document.querySelector('webview.active') as any).stopFindInPage('keepSelection');
         (document.querySelector('webview.active') as HTMLElement).focus();
     }
@@ -629,5 +633,46 @@ function searchInPage() {
         if (e.result.matches !== undefined) {
             document.querySelector('.search span.matches').textContent = e.result.activeMatchOrdinal + ' of ' + e.result.matches;
         }
+
+        if (e.result.activeMatchOrdinal === e.result.matches) {
+            (document.querySelector('.search input.next') as HTMLInputElement).setAttribute('disabled', '');
+        } else {
+            (document.querySelector('.search input.next') as HTMLInputElement).removeAttribute('disabled');
+        }
+
+        if (e.result.activeMatchOrdinal <= 1) {
+            (document.querySelector('.search input.previous') as HTMLInputElement).setAttribute('disabled', '');
+        } else {
+            (document.querySelector('.search input.previous') as HTMLInputElement).removeAttribute('disabled');
+        }
     });
+}
+
+function animateSearch(action: any = 'hide') {
+    const search: HTMLElement = (document.querySelector('.search') as HTMLElement);
+    const page: any = document.querySelector('.pages .page');
+
+    switch (action) {
+        case 'hide':
+            search.classList.remove('animComplete');
+            search.classList.remove('active');
+            $(page).addClass('findAnim');
+            setTimeout(() => {
+                $(page).removeClass('findAnim');
+            }, 300);
+            (document.querySelector('.search input.searchbox') as HTMLElement).focus();
+            searchInPage();
+            break;
+        case 'show':
+            search.classList.add('active');
+            $(page).addClass('findAnim');
+            setTimeout(() => {
+                search.classList.add('animComplete');
+                $(page).removeClass('findAnim');
+            }, 300);
+            searchInPage();
+            break;
+        default:
+            animateSearch('hide');
+    }
 }

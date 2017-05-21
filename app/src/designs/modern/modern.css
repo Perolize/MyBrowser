@@ -78,3 +78,12 @@ span.seperator {
 .bottombar .links {
     margin-top: -.1rem;
 }
+
+.search span,
+.search input[type="button"] {
+    color: #333;
+}
+
+.search input[type="button"]:disabled {
+    color: #b1b1b1;
+}
