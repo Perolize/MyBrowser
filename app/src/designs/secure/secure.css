@@ -79,3 +79,13 @@ body.secure .nav-item:hover {
 .navbar.secure .bottombar .links .fa {
     color: #fff;
 }
+
+body.secure .nav-item span:before, 
+.navbar.secure .tabs li span:before {
+    color: #fff;
+}
+
+body.secure .nav-item a.audio, 
+.navbar.secure .topbar .tabs li a.audio {
+    color: #fff;
+}
