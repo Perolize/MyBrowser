@@ -39,6 +39,15 @@ body.secure .nav-item {
     background: #51b57b;  
 }
 
+.navbar.secure .topbar .tabs li {
+    border-left: 1px solid #5b9c76;
+    border-right: 1px solid #5b9c76;
+}
+
+.navbar.secure .topbar .tabs li:last-of-type {
+    border: 0;
+}
+
 .navbar.secure .bottombar {
     background: #67da97;
     border-bottom-color: #67da97;  
@@ -87,5 +96,13 @@ body.secure .nav-item span:before,
 
 body.secure .nav-item a.audio, 
 .navbar.secure .topbar .tabs li a.audio {
+    color: #fff;
+}
+
+body.secure .search {
+    background: #67da97;
+}
+
+body.secure .search input[type="button"], body.secure .search span {
     color: #fff;
 }
