@@ -28,6 +28,14 @@ let input;
 //     }
 // });
 
+export function enableSecureMode() {
+    $('body').addClass('secure');
+    $('.navbar').addClass('secure');
+    $('win-controls').attr('secureMode', 'on');
+
+    return 'Enabled UI';
+}
+
 $(document).ready(() => {
     const window = remote.getCurrentWindow();
 
@@ -173,7 +181,7 @@ export function createNewTab(id: number, url: string = 'mybrowser://blank') {
 export function onClickTab(e: any) {
     const id = parseInt($(this).attr('data-id'));
 
-    if (!$(e.target).is(`.tabs li[data-id="${id}"] a.audio`) && $(`.tabs li[data-id="${id}"] a.audio`).has(e.target).length <= 0) {
+    if ((!$(e.target).is(`.tabs li[data-id="${id}"] a.audio`) && $(`.tabs li[data-id="${id}"] a.tab-close`).has(e.target).length <= 0) && (!$(e.target).is(`.tabs li[data-id="${id}"] a.tab-close`) && $(`.tabs li[data-id="${id}"] a.tab-close`).has(e.target).length <= 0)) {
         if (id !== parseInt($('.tabs li.active').attr('data-id'))) {
 
             $('.tabs .nav-item.active').removeClass('active');
@@ -236,52 +244,56 @@ export function onClickRemoveTab(e: Event) {
     // let didCreate: any;
     // let activeId: any;
 
-    $(`[data-id="${id}"]`).remove();
+    $(`.tabs li[data-id="${id}"]`).removeClass('active').addClass('remove');
 
-    if ($('.tabs li').length > 0) {
-        let largestTime = 0;
-        let currentId = 0;
+    setTimeout(() => {
+        $(`[data-id="${id}"]`).remove();
 
-        $(`.tabs li`).each((i: any) => {
-            const time = parseInt($(`.tabs li:eq("${i}")`).attr('time')) || 0;
-            largestTime = time > largestTime ? time : largestTime;
-            currentId = time >= largestTime ? parseInt($(`.tabs li:eq("${i}")`).attr('data-id')) : currentId;
-        });
+        if ($('.tabs li').length > 0) {
+            let largestTime = 0;
+            let currentId = 0;
 
-        $('.tabs li.active').removeClass('active');
-        $('.pages webview.active').removeClass('active');
-        $(`[data-id="${currentId}"]`).addClass('active');
+            $(`.tabs li`).each((i: any) => {
+                const time = parseInt($(`.tabs li:eq("${i}")`).attr('time')) || 0;
+                largestTime = time > largestTime ? time : largestTime;
+                currentId = time >= largestTime ? parseInt($(`.tabs li:eq("${i}")`).attr('data-id')) : currentId;
+            });
 
-        $('.tabs .nav-item').removeClass('before');
-        $('.tabs .nav-item').removeClass('after');
+            $('.tabs li.active').removeClass('active');
+            $('.pages webview.active').removeClass('active');
+            $(`[data-id="${currentId}"]`).addClass('active');
 
-        $(`.tabs li[data-id="${currentId}"]`).prev().addClass('before');
-        if ($(`.tabs li[data-id="${currentId}"]`).next().hasClass('nav-item')) {
-            $(`.tabs li[data-id="${currentId}"]`).next().addClass('after');
-        }
+            $('.tabs .nav-item').removeClass('before');
+            $('.tabs .nav-item').removeClass('after');
 
-        if (isTyping) {
-            input = $('.navigation .url').text();
-        }
+            $(`.tabs li[data-id="${currentId}"]`).prev().addClass('before');
+            if ($(`.tabs li[data-id="${currentId}"]`).next().hasClass('nav-item')) {
+                $(`.tabs li[data-id="${currentId}"]`).next().addClass('after');
+            }
 
-        if ($(`webview[data-id=${currentId}]`).attr('input') !== (undefined || '')) {
-            setTimeout(() => {
-                $('.navigation .url').text($(`webview[data-id=${currentId}]`).attr('input'));
-            }, 3);
+            if (isTyping) {
+                input = $('.navigation .url').text();
+            }
 
-            isTyping = true;
+            if ($(`webview[data-id=${currentId}]`).attr('input') !== (undefined || '')) {
+                setTimeout(() => {
+                    $('.navigation .url').text($(`webview[data-id=${currentId}]`).attr('input'));
+                }, 3);
+
+                isTyping = true;
+            } else {
+                isTyping = false;
+            }
+
+            webview.setTitle(currentId)
+            webview.onNavigating(currentId);
+
+            largestTime = 0;
+            currentId = 0;
         } else {
-            isTyping = false;
+            remote.getCurrentWindow().close();
         }
-
-        webview.setTitle(currentId)
-        webview.onNavigating(currentId);
-
-        largestTime = 0;
-        currentId = 0;
-    } else {
-        remote.getCurrentWindow().close();
-    }
+    }, 200);
 
     // $(`.new-tab`).addClass('lol').removeClass('lol').promise()
     //     .then(() => {

@@ -26,9 +26,11 @@ const tabs = dragula([document.querySelector('.tabs')],
 tabs.on('drop', onDrop);
 
 export function newTab(tabUrl = 'mybrowser://blank', open: boolean = true, id: any = parseInt($('.new-tab').prev().attr('data-id')) + 1, callback: any = undefined) {
-    const tabLI = `<li class="nav-item ${open ? 'active' : ''}" data-id="${id}"><span class="fa fa-spinner"></span><img class="favicon" draggable="false" /><a class="nav-link">Blank</a><a class="audio"><i class="fa fa-volume-up"></i></a><a class="tab-close"><i class="fa fa-times"></i></a></li>`;
+    const tabLI = `<li class="nav-item ${open ? 'active' : ''} new" data-id="${id}"><span class="fa fa-spinner"></span><img class="favicon" draggable="false" /><a class="nav-link">Blank</a><a class="audio"><i class="fa fa-volume-up"></i></a><a class="tab-close"><i class="fa fa-times"></i></a></li>`;
     const page = `<webview class="page ${open ? 'active' : ''}" src="${tabUrl}" data-id="${id}"></webview>`;
     const $tabs = $('.tabs li');
+
+    $('.new-tab').addClass('newTab');
 
     if (open) {
         $('.tabs .nav-item').removeClass('active');
@@ -36,6 +38,17 @@ export function newTab(tabUrl = 'mybrowser://blank', open: boolean = true, id: a
     }
     $(tabLI).insertBefore(`.new-tab`);
     $('.pages').append(page);
+
+    $('.new-tab').css('left', 0);
+    $(`.tabs .nav-item[data-id="${id}"]`).css('left', 0);
+
+    setTimeout(() => {
+        $('.new-tab').removeClass('newTab');
+        $(`.tabs .nav-item[data-id="${id}"]`).removeClass('new');
+        $('.new-tab').css('left', '');
+        $(`.tabs .nav-item[data-id="${id}"]`).css('left', '');
+        open ? $(`.tabs .nav-item[data-id="${id}"]`).addClass('active') : '';
+    }, 200);
 
     if ($tabs.length >= 22) {
         $('.new-tab').addClass('disabled');

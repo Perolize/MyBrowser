@@ -2,6 +2,33 @@
 .nav-item {
     border-top-right-radius: .6rem;
     border-top-left-radius: .6rem;
+    left: 0;
+}
+
+.topbar .tabs li.new {
+    left: -11rem;
+    transition: left .2s;
+}
+
+.topbar .tabs a.new-tab {
+    position: relative;
+    left: 0;
+}
+
+.topbar .tabs a.new-tab.newTab {
+    left: -10.5rem;
+    transition: left .2s;
+}
+
+.topbar .tabs li.remove {
+    left: -10rem;
+    z-index: -50!important;
+    transition: left .2s;
+}
+
+.topbar .tabs a.new-tab.removeTab {
+    left: -11.5rem;
+    transition: left .2s;
 }
 
 .bottombar .navigation .info,
