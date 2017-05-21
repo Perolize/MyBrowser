@@ -373,13 +373,13 @@ export function showMenu(type: string, params: any, templates: any) {
 }
 
 export function onContextMenu() {
-  electron.ipcRenderer.on('contextmenu', (e, target) => {
+  electron.ipcRenderer.on('contextmenu', (e: any, target: any) => {
     contextMenuTarget = target;
   });
 }
 
 export function onDevToolsOpen() {
-  electron.ipcRenderer.on('openDevTools', (e, msg) => {
+  electron.ipcRenderer.on('openDevTools', (e: any, msg: any) => {
     const wv = document.querySelector('.pages webview.active') as any;
     const target = contextMenuTarget;
 
@@ -390,7 +390,7 @@ export function onDevToolsOpen() {
 }
 
 export function onOpenInNewTab() {
-  electron.ipcRenderer.once('openInNewTab', (e, msg) => {
+  electron.ipcRenderer.once('openInNewTab', (e: any, msg: any) => {
     const id = parseInt($('.tabs li').last().attr('data-id')) + 1;
     const target = contextMenuTarget;
     main.createNewTab(id, target.link);

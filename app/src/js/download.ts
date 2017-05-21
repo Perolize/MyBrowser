@@ -54,7 +54,7 @@ export function addItemToList(item: any) {
         downloadItem.style.display = 'none';
     }
 
-    document.querySelectorAll(`.download-item .info .time[time='${time}']`).forEach((i: any) => {
+    (document.querySelectorAll(`.download-item .info .time[time='${time}']`) as any).forEach((i: any) => {
         if (document.querySelector(`.download-item:last-child .info .time[time='${time}']`) !== document.querySelectorAll(`.download-item .info .time[time='${time}']`)[i]) {
             document.querySelectorAll(`.download-item .info .time[time='${time}']`)[i].parentElement.parentElement.parentElement.parentElement.remove();
         }

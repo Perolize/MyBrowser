@@ -110,23 +110,23 @@ Mousetrap.bind(['ctrl+w', 'command+w', 'ctrl+f4', 'command+f4'], (e: any) => {
 });
 
 Mousetrap.bind(['alt+left', 'backspace'], () => {
-    document.querySelector(`.pages webview.active`).goBack();
+    (document.querySelector(`.pages webview.active`) as any).goBack();
 });
 
 Mousetrap.bind(['alt+right', 'shift+backspace'], () => {
-    document.querySelector(`.pages webview.active`).goForward();
+    (document.querySelector(`.pages webview.active`) as any).goForward();
 });
 
 Mousetrap.bind(['ctrl+f5'], () => {
-    document.querySelector(`.pages webview.active`).reloadIgnoringCache();
+    (document.querySelector(`.pages webview.active`) as any).reloadIgnoringCache();
 });
 
 Mousetrap.bind(['esc'], () => {
-    document.querySelector(`.pages webview.active`).stop();
+   (document.querySelector(`.pages webview.active`) as any).stop();
 });
 
 Mousetrap.bind(['alt+home'], () => {
-    document.querySelector(`.pages webview.active`).loadURL('mybrowser://blank');
+    (document.querySelector(`.pages webview.active`) as any).loadURL('mybrowser://blank');
 });
 
 Mousetrap.bind(['f11'], () => {

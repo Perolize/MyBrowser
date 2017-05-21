@@ -5,7 +5,7 @@ const origLstat = fs.lstatSync.bind(fs);
 
 // NB: The biggest offender of thrashing lstatSync is the node module system
 // itself, which we can't get into via any sane means.
-require('fs').lstatSync = function(p) {
+require('fs').lstatSync = function(p: any) {
   let r = lru.get(p);
   if (r) return r;
 

@@ -7,5 +7,5 @@ $(document).ready(() => {
 
 ipcRenderer.on('open-url', (e: any, msg: any) => {
     const url = normalizeUrl(msg);
-    document.querySelector('webview.active').loadURL(url);
+    (document.querySelector('webview.active') as any).loadURL(url);
 });

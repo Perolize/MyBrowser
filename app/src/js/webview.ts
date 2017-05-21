@@ -530,7 +530,7 @@ export function addToHistory(id: Number = undefined) {
                         fulfill(img);
                     });
                 })
-                    .then(img => {
+                    .then((img: any) => {
                         const date = Date.now();
                         if (history.indexOf({ url: url, title: title, page: `mybrowser://history/img/${title}-${date}.png`, date: date }) === -1) {
                             fs.open(path.join(__dirname, `../history/img/${title}-${Date.now()}.png`), 'wx', (err: any) => {

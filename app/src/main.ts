@@ -34,7 +34,7 @@ function createWindow() {
     console.timeEnd('init')
   });
 
-  protocol.registerFileProtocol('mybrowser', (req, cb) => {
+  protocol.registerFileProtocol('mybrowser', (req: any, cb: any) => {
     const fullUrl = path.normalize(`${__dirname}/pages/${req.url.substr(12)}.html`);
 
     if (req.url.substr(12).startsWith('js')) {
@@ -102,7 +102,7 @@ function createWindow() {
     createNewWindow(msg || undefined);
   });
 
-  ipcMain.on('notification-shim', (e, msg) => {
+  ipcMain.on('notification-shim', (e: any, msg: any) => {
     console.log(msg)
     const eNotify = require('./js/notification/notifier/index.js');
 
@@ -152,7 +152,7 @@ function createWindow() {
     eNotify.notify(msg);
   });
 
-  ipcMain.on('open-view', (e, notificationObj) => {
+  ipcMain.on('open-view', (e: any, notificationObj: any) => {
     ipcRenderer.send('open-view', notificationObj);
   });
 
@@ -191,7 +191,7 @@ function createNewWindow(tabUrl = 'mybrowser://blank') {
     createNewWindow(msg || undefined);
   });
 
-  ipcMain.on('notification-shim', (e, msg) => {
+  ipcMain.on('notification-shim', (e: any, msg: any) => {
     console.log(msg)
     const eNotify = require('./js/notification/notifier/index.js');
 
@@ -241,7 +241,7 @@ function createNewWindow(tabUrl = 'mybrowser://blank') {
     eNotify.notify(msg);
   });
 
-  ipcMain.on('open-view', (e, notificationObj) => {
+  ipcMain.on('open-view', (e: any, notificationObj: any) => {
     ipcRenderer.send('open-view', notificationObj);
   });
 
