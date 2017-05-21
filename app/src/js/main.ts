@@ -245,11 +245,13 @@ export function onClickRemoveTab(e: Event) {
     // let activeId: any;
 
     $(`.tabs li[data-id="${id}"]`).removeClass('active').addClass('remove');
+    $(`.tabs li[data-id="${id}"]`).nextAll().addClass('remove');
     $('a.new-tab').addClass('removeTab');
 
     setTimeout(() => {
         $('a.new-tab').removeClass('removeTab');
         $(`[data-id="${id}"]`).remove();
+        $(`.tabs li.remove`).removeClass('remove');
 
         if ($('.tabs li').length > 0) {
             let largestTime = 0;
