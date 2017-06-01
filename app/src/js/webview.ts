@@ -14,7 +14,7 @@ const window = electron.remote.getCurrentWindow()
 const ipcRenderer = electron.ipcRenderer;
 
 let userDataFolder: any;
-require('../utils/getUserData')().then((path: any) => {userDataFolder = path});
+require('../utils/getUserData')().then((path: any) => { userDataFolder = path });
 
 let contextMenuTarget: any;
 let history: any[] = [];
@@ -537,14 +537,10 @@ export function addToHistory(id: Number = undefined) {
                         const date = Date.now();
                         if (history.indexOf({ url: url, title: title, page: `mybrowser://history/img/${title}-${date}.png`, date: date }) === -1) {
                             fs.open(path.join(userDataFolder, `./history/img/${title}-${Date.now()}.png`), 'wx', (err: any) => {
-                                if (err) {
-                                    console.error(err);
-                                } else {
+                                if (!err) {
                                     console.log(path.join(userDataFolder, `./history/img/${title}-${date}.png`))
                                     fs.writeFile(path.join(userDataFolder, `./history/img/${title}-${date}.png`), img.toPNG(), (err: any) => {
-                                        if (err) {
-                                            console.log(err);
-                                        } else {
+                                        if (!err) {
                                             history.push({ url: url, title: title, page: `mybrowser://history/img/${title}-${date}.png`, date: date });
 
                                             console.log(history.indexOf({ url: url, title: title, page: `mybrowser://history/img/${title}-${date}.png`, date: date }), history)
