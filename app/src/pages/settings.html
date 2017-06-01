@@ -283,10 +283,6 @@
                             if (folders.length !== 0) {
                                 folder = folders[folder];
 
-                                console.log(lastFolder);
-                                console.log(folder.path)
-                                console.log(folder.path === lastFolder);
-
                                 if (folder.path !== undefined && folder.path !== lastFolder) {
                                     lastFolder = folder.path;
                                     const item = `<option>${folder.path}</option>`;
