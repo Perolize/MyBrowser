@@ -1,3 +1,7 @@
+.topbar .tabs {
+    overflow: hidden;
+}
+
 .topbar .tabs li,
 .nav-item {
     border-top-right-radius: .6rem;

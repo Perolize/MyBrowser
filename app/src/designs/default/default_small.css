@@ -11,6 +11,14 @@
     margin-top: -.5rem;
 }
 
+.nav-item.after:not(.active) a.tab-close {
+    right: .5rem;
+}
+
+.nav-item.after:hover a.nav-link.audioPlaying {
+    border-width: .15rem 3.5rem 0 .6rem
+}
+
 .topbar .tabs li.active,
 .nav-item.active {
     height: 1.87rem;
@@ -121,7 +129,7 @@
 }
 
 .topbar .tabs li.after:hover a.audio {
-    right: 2.5rem;
+    right: 2rem;
 }
 
 .topbar .tabs li.after:hover a.nav-link.audioPlaying {
@@ -134,12 +142,12 @@
 }
 
 .topbar .tabs li.after:hover .nav-link {
-    border-width: .17rem 2.5rem 0 .6rem;
+    border-width: .17rem 2rem 0 .6rem;
 }
 
 .topbar .tabs li .nav-link,
 .nav-item .nav-link {
-    border-width: .17rem 0 0 .6rem;
+    border-width: .17rem .6rem 0 .6rem;
 }
 
 .pages {
