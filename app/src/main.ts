@@ -1,4 +1,5 @@
 const electron = require('electron');
+const windowStateKeeper = require('electron-window-state');
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
@@ -7,6 +8,7 @@ const ipcMain = electron.ipcMain
 const ipcRenderer = electron.ipcRenderer;
 const protocol = electron.protocol
 
+const fs = require('fs')
 const path = require('path')
 const del = require('del')
 const url = require('url')
@@ -24,14 +26,33 @@ process.on('uncaughtException', (err: any) => {
   console.log(err);
 });
 
+fs.open(path.join(app.getPath('userData'), './history/img'), 'r', (err: any) => {
+  if (err) {
+    if (err.code === 'ENOENT') {
+      fs.mkdir(path.join(app.getPath('userData'), './history/img'), () => { });
+    } else {
+      console.error(err)
+    }
+  }
+});
+
 function createWindow() {
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 1000,
+    defaultHeight: 800
+  });
+
   // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 800, height: 600, frame: false, icon: path.join(__dirname, 'img/logo-2.png'), backgroundColor: '#f5f5f5' });
+  mainWindow = new BrowserWindow({ width: mainWindowState.width, height: mainWindowState.height, x: mainWindowState.x, y: mainWindowState.y, frame: false, icon: path.join(__dirname, 'img/logo-2.png'), backgroundColor: '#f5f5f5' });
 
   console.time('init');
 
   ipcMain.on('ready-init', (e: any) => {
     console.timeEnd('init')
+  });
+
+  ipcMain.on('userData', (e: any) => {
+    e.sender.send('userData', app.getPath('userData'));
   });
 
   protocol.registerFileProtocol('mybrowser', (req: any, cb: any) => {
@@ -54,7 +75,7 @@ function createWindow() {
 
       cb({ path: imgPath })
     } else if (req.url.substr(12).startsWith('history')) {
-      const historyPath = path.normalize(`${__dirname}/${req.url.substr(12)}`);
+      const historyPath = path.normalize(`${app.getPath('userData')}${req.url.substr(12)}`);
 
       cb({ path: historyPath })
     } else if (req.url.substr(12).endsWith('Folder')) {
@@ -155,6 +176,10 @@ function createWindow() {
   ipcMain.on('open-view', (e: any, notificationObj: any) => {
     ipcRenderer.send('open-view', notificationObj);
   });
+
+  mainWindowState.manage(mainWindow);
+
+  require('electron-unhandled')();
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()

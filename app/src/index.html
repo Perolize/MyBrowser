@@ -144,13 +144,11 @@
   const crashReporter = require('./utils/crash-reporter')
   crashReporter.init()
 
+  require('electron-unhandled')({ showDialog: false, logger: (msg) => { } });
+
   $(document).ready(() => {
     ipcRenderer.send('ready-init');
   });
-
-  window.onerror = (msg) => {
-    console.log(msg);
-  }
 
   const searchBar = document.querySelector('.url');
   $(searchBar).after('<input class="searchBar autocomplete" data-list="#autocomplete" hidden>');
@@ -188,8 +186,10 @@
   searchBar.addEventListener('click', e => {
     e.preventDefault();
 
-    list.querySelectorAll('li')[0].setAttribute('aria-selected', 'true');
-    list.removeAttribute('hidden');
+    if (list.innerHTML !== '') {
+      list.querySelectorAll('li')[0].setAttribute('aria-selected', 'true');
+      list.removeAttribute('hidden');
+    }
   });
 
   searchBar.addEventListener('input', () => {

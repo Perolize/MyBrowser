@@ -537,13 +537,15 @@ export function addToHistory(id: Number = undefined) {
                         const date = Date.now();
                         if (history.indexOf({ url: url, title: title, page: `mybrowser://history/img/${title}-${date}.png`, date: date }) === -1) {
                             fs.open(path.join(userDataFolder, `./history/img/${title}-${Date.now()}.png`), 'wx', (err: any) => {
-                                if (!err) {
+                                if (err) {
+                                    console.error(err);
+                                } else {
                                     console.log(path.join(userDataFolder, `./history/img/${title}-${date}.png`))
                                     fs.writeFile(path.join(userDataFolder, `./history/img/${title}-${date}.png`), img.toPNG(), (err: any) => {
-                                        if (!err) {
+                                        if (err) {
+                                            console.error(err);
+                                        } else {
                                             history.push({ url: url, title: title, page: `mybrowser://history/img/${title}-${date}.png`, date: date });
-
-                                            console.log(history.indexOf({ url: url, title: title, page: `mybrowser://history/img/${title}-${date}.png`, date: date }), history)
                                         }
                                     });
                                 }
