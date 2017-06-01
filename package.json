@@ -6,6 +6,7 @@
   "scripts": {
     "build:watch": "tsc -p app/src/ -w",
     "start": "gulp && electron .",
+    "watch": "concurrently \"npm start\" \"gulp watch\" ",
     "movesssets": "cpx \"app/src/*.{html,css}\" app/dist && cpx \"app/src/**/*.{html,css}\" app/dist &&  cpx \"app/src/**/*.{js,js.map}\" app/dist",
     "watchassets": "onchange \"app/src/**/*.css\" \"app/src/**/*.html\" -e \"app/dist/*\" -v -- cpx \"app/src/**/*.{html,css}\" app/dist",
     "watchassets2": "onchange \"app/src/*.css\" \"app/src/*.html\" -e \"app/dist/*\" -v -- cpx \"app/src/*.{html,css}\" app/dist",
@@ -31,7 +32,7 @@
     "@types/jquery": "^2.0.41",
     "@types/node": "^7.0.18",
     "concurrently": "^3.1.0",
-    "electron": "^1.6.4",
+    "electron": "^1.6.10",
     "electron-builder": "^17.3.1",
     "electron-builder-squirrel-windows": "^16.7.0",
     "electron-connect": "^0.6.1",
