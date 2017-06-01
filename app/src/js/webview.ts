@@ -13,6 +13,9 @@ import * as modern from '../designs/modern/modern';
 const window = electron.remote.getCurrentWindow()
 const ipcRenderer = electron.ipcRenderer;
 
+let userDataFolder: any;
+require('../utils/getUserData')().then((path: any) => {userDataFolder = path});
+
 let contextMenuTarget: any;
 let history: any[] = [];
 let added: boolean = false;
@@ -135,7 +138,7 @@ export function onWebViewCreated(id: Number = undefined) {
         if (e.errorDescription !== '') {
             render('error', e.validatedURL, e.errorCode, e.errorDescription, id);
         }
-        console.log(e.errorDescription);
+        console.error(e.errorDescription);
     });
 
     wv.addEventListener('ipc-message', (e: any) => {
@@ -533,12 +536,12 @@ export function addToHistory(id: Number = undefined) {
                     .then((img: any) => {
                         const date = Date.now();
                         if (history.indexOf({ url: url, title: title, page: `mybrowser://history/img/${title}-${date}.png`, date: date }) === -1) {
-                            fs.open(path.join(__dirname, `../history/img/${title}-${Date.now()}.png`), 'wx', (err: any) => {
+                            fs.open(path.join(userDataFolder, `./history/img/${title}-${Date.now()}.png`), 'wx', (err: any) => {
                                 if (err) {
-                                    console.log(err);
+                                    console.error(err);
                                 } else {
-                                    console.log(path.join(__dirname, `../history/img/${title}-${date}.png`))
-                                    fs.writeFile(path.join(__dirname, `../history/img/${title}-${date}.png`), img.toPNG(), (err: any) => {
+                                    console.log(path.join(userDataFolder, `./history/img/${title}-${date}.png`))
+                                    fs.writeFile(path.join(userDataFolder, `./history/img/${title}-${date}.png`), img.toPNG(), (err: any) => {
                                         if (err) {
                                             console.log(err);
                                         } else {
