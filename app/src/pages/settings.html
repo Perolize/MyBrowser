@@ -59,10 +59,10 @@
                 <p>
                     <input type="radio" rel="downloads" id="downloadsNoAsk" />
                     <label for="downloadsNoAsk">Automatically save to: &nbsp;</label>
-                    <select class="btn">
+                    <select class="btn" id="saveToFolder">
                         <option>Downloads</option>
                     </select>
-                    <a class="btn select">Browse</a>
+                    <a class="browse btn select" data-show-on="#saveToFolder">Browse</a>
                 </p>
             </div>
             <div class="tabs subsetting">
@@ -193,6 +193,7 @@
                 </p>
             </div>
         </div>
+        <input type="file" id="browseFolder" style="display: none;" webkitdirectory directory>
     </div>
 
     <script src="mybrowser://js/plugins/jquery.min.js"></script>
@@ -264,6 +265,36 @@
                 item.addEventListener('click', e => {
                     const target = e.target.parentElement;
                     target.classList.toggle('active');
+                });
+            });
+
+            let lastFolder;
+
+            document.querySelectorAll('.browse.btn').forEach(item => {
+                item.addEventListener('click', e => {
+                    performClick('browseFolder');
+
+                    onSelected('browseFolder', () => {
+                        const folders = getSelected('browseFolder');
+                        const showOnQuery = e.target.getAttribute('data-show-on');
+                        const showOn = document.querySelector(showOnQuery);
+
+                        for (folder in folders) {
+                            if (folders.length !== 0) {
+                                folder = folders[folder];
+
+                                console.log(lastFolder);
+                                console.log(folder.path)
+                                console.log(folder.path === lastFolder);
+
+                                if (folder.path !== undefined && folder.path !== lastFolder) {
+                                    lastFolder = folder.path;
+                                    const item = `<option>${folder.path}</option>`;
+                                    addItemToSelect(showOn, item);
+                                }
+                            }
+                        }
+                    });
                 });
             });
 
@@ -402,6 +433,36 @@
 
             });
         });
+
+        function performClick(elemId) {
+            var elem = document.getElementById(elemId);
+            if (elem && document.createEvent) {
+                var evt = document.createEvent("MouseEvents");
+                evt.initEvent("click", true, false);
+                elem.dispatchEvent(evt);
+            }
+        }
+
+        function getSelected(elemId) {
+            return document.getElementById(elemId).files;
+        }
+
+        function addItemToSelect(selectElem, item) {
+            const optionsUL = selectElem.parentElement.querySelector('.options');
+
+            if (item.startsWith('<option')) {
+                let text = item.replace('<option>', '');
+                text = text.replace('</option>', '');
+
+                optionsUL.innerHTML += `<li rel="${text}">${text}</li>`;
+            } else {
+                optionsUL.innerHTML += item;
+            }
+        }
+
+        function onSelected(elemId, callback) {
+            document.getElementById(elemId).addEventListener('change', callback);
+        }
 
         function switchTextBtn(btn) {
             const firstText = btn.querySelector('span').innerHTML.split(' || ')[0];
