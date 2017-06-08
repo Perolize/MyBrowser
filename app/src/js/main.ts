@@ -36,6 +36,14 @@ export function enableSecureMode() {
     return 'Enabled UI';
 }
 
+export function disableSecureMode() {
+    $('body').removeClass('secure');
+    $('.navbar').removeClass('secure');
+    $('win-controls').attr('secureMode', 'off');
+
+    return 'Disabled UI';
+}
+
 $(document).ready(() => {
     const window = remote.getCurrentWindow();
 
@@ -183,7 +191,7 @@ export function onClickTab(e: any) {
 
     if ((!$(e.target).is(`.tabs li[data-id="${id}"] a.audio`) && $(`.tabs li[data-id="${id}"] a.tab-close`).has(e.target).length <= 0) && (!$(e.target).is(`.tabs li[data-id="${id}"] a.tab-close`) && $(`.tabs li[data-id="${id}"] a.tab-close`).has(e.target).length <= 0)) {
         if (id !== parseInt($('.tabs li.active').attr('data-id'))) {
-
+            
             $('.tabs .nav-item.active').removeClass('active');
             $('.page.active').removeClass('active');
 
