@@ -1,3 +1,4 @@
+import * as storage from 'electron-storage';
 import * as electron from 'electron';
 import * as path from 'path';
 import * as isUrl from 'is-url';
@@ -21,6 +22,11 @@ let history: any[] = [];
 let added: boolean = false;
 let grantedSites: any[] = [];
 let deniedSites: any[] = [];
+
+getHistory()
+    .then((data: any) => {
+        history = data;
+    });
 
 export function onWebViewCreated(id: Number = undefined) {
     let wv: any;
@@ -400,6 +406,27 @@ export function onHistory(id: Number = undefined) {
     });
 }
 
+function getHistory() {
+    return storage.get('./history/history.json');
+}
+
+function saveHistory(history: any, callback: any = undefined, error: any = undefined) {
+    storage.set('./history/history.json', history)
+        .then(() => {
+            if (callback === undefined) {
+                return;
+            }
+            callback();
+        })
+        .catch((err: any) => {
+            if (error === undefined) {
+                console.error(err);
+                return;
+            }
+            error(err);
+        });
+}
+
 export function onSearch(id: Number = undefined) {
     let wv: any;
     if (id !== undefined) {
@@ -535,7 +562,7 @@ export function addToHistory(id: Number = undefined) {
                 })
                     .then((img: any) => {
                         const date = Date.now();
-                        if (history.indexOf({ url: url, title: title, page: `mybrowser://history/img/${title}-${date}.png`, date: date }) === -1) {
+                        if (history.indexOf({ url: url, title: title, page: `mybrowser://historyFolder/img/${title}-${date}.png`, date: date }) === -1) {
                             fs.open(path.join(userDataFolder, `./history/img/${title}-${Date.now()}.png`), 'wx', (err: any) => {
                                 if (err) {
                                     console.error(err);
@@ -545,7 +572,8 @@ export function addToHistory(id: Number = undefined) {
                                         if (err) {
                                             console.error(err);
                                         } else {
-                                            history.push({ url: url, title: title, page: `mybrowser://history/img/${title}-${date}.png`, date: date });
+                                            history.push({ url: url, title: title, page: `mybrowser://historyFolder/img/${title}-${date}.png`, date: date });
+                                            saveHistory(history);
                                         }
                                     });
                                 }
