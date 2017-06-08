@@ -131,7 +131,7 @@ input.searchBar {
 
 .site:not([disabled]):hover .info {
     top: 8rem;
-    height: 5rem;
+    height: auto;
     border-radius: 0 0 2rem 2rem;
 }
 
