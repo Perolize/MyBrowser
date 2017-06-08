@@ -133,7 +133,7 @@
 }
 
 .topbar .tabs li.after:hover a.nav-link.audioPlaying {
-    border-width: .15rem 4rem 0 .6rem;
+    border-width: .15rem 3.5rem 0 .6rem;
 }
 
 .topbar .tabs li .favicon,
