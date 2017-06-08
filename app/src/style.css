@@ -4,6 +4,33 @@
 body {
     overflow: hidden;
     height: 100%;
+    position: relative;
+}
+
+@keyframes fadeout {
+    from {
+        opacity: 1;
+        visibility: visible;
+    }
+    to {
+        opacity: 0;
+        visibility: collapse;
+    }
+}
+
+.app {
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+    user-select: none;
+    height: 100%;
+    width: 100%;
+    background: #f5f5f5;
+    animation: fadeout .5s;
+    position: absolute;
+    top: 0;
+    opacity: 0;
+    visibility: collapse;
+    z-index: 9999999999999999999999999999999;
 }
 
 li {
