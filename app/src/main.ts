@@ -74,10 +74,20 @@ function createWindow() {
       const imgPath = path.normalize(`${__dirname}/${req.url.substr(12)}`);
 
       cb({ path: imgPath })
-    } else if (req.url.substr(12).startsWith('history')) {
-      const historyPath = path.normalize(`${app.getPath('userData')}${req.url.substr(12)}`);
+    } else if (req.url.substr(12).startsWith('historyFolder') || req.url.substr(12).startsWith('historyfolder')) {
+      const historyPath = path.normalize(`${app.getPath('userData')}/history/${req.url.substr(25)}`);
 
       cb({ path: historyPath })
+    } else if (req.url.substr(12).startsWith('history')) {
+      if (req.url.substr(12).match(/^(?!history$).*/)) {
+        const historyPath = path.normalize(`${__dirname}/pages/${req.url.substr(12)}`);
+
+        cb({ path: historyPath })
+      } else {
+        const historyPath = path.normalize(`${__dirname}/pages/${req.url.substr(12)}/index.html`);
+
+        cb({ path: historyPath })
+      }
     } else if (req.url.substr(12).endsWith('Folder')) {
       const jsPath = path.normalize(`${__dirname}/${req.url.substr(12).replace('Folder', '')}`);
 
