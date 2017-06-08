@@ -83,6 +83,14 @@ export function styleUrl() {
         $('.bottombar .navigation .mybrowser').show();
         $('.bottombar .navigation .info').hide();
         $('.bottombar .navigation input.secure').hide();
+    } else if(parser.hostname === 'localhost') {
+        const port = parser.port;
+        const path = parser.pathname !== '/' ? parser.pathname : '';
+        const query = parser.search;
+
+        $('.bottombar .navigation .url').html(`${parser.hostname}<span class="port">${port !== '' ? ':' + port : ''}</span><span class="path">${path}</span><span class="query">${query}</span>`);
+        $('.bottombar .navigation .mybrowser').hide();
+        $('.bottombar .navigation .info').show();
     } else {
         const protocol = parser.protocol.replace(':', '');
         const domain = tld.getDomain(parser.hostname);
