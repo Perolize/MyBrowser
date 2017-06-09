@@ -8,10 +8,11 @@ const ipcMain = electron.ipcMain
 const ipcRenderer = electron.ipcRenderer;
 const protocol = electron.protocol
 
-const fs = require('fs')
-const path = require('path')
-const del = require('del')
-const url = require('url')
+const os = require('os');
+const fs = require('fs');
+const path = require('path');
+const del = require('del');
+const url = require('url');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -42,9 +43,11 @@ function createWindow() {
     defaultHeight: 800
   });
 
-  // Create the browser window.
-  mainWindow = new BrowserWindow({ width: mainWindowState.width, height: mainWindowState.height, x: mainWindowState.x, y: mainWindowState.y, frame: false, icon: path.join(__dirname, 'img/logo-2.png'), backgroundColor: '#f5f5f5' });
-
+  if (os.platform() === 'drawin') {
+    mainWindow = new BrowserWindow({ width: mainWindowState.width, height: mainWindowState.height, x: mainWindowState.x, y: mainWindowState.y, titleBarStyle: 'hidden', icon: path.join(__dirname, 'img/logo-2.png'), backgroundColor: '#f5f5f5' });
+  } else {
+    mainWindow = new BrowserWindow({ width: mainWindowState.width, height: mainWindowState.height, x: mainWindowState.x, y: mainWindowState.y, frame: false, icon: path.join(__dirname, 'img/logo-2.png'), backgroundColor: '#f5f5f5' });
+  }
   console.time('init');
 
   ipcMain.on('ready-init', (e: any) => {

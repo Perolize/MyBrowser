@@ -33,7 +33,11 @@
 </head>
 
 <body>
-  <div class="app"></div>
+  <div class="app">
+    <div class="topbar">
+      <win-controls platform="win32"></win-controls>
+    </div>
+  </div>
   <div class="titlebar"></div>
   <div class="navbar">
     <div class="topbar">
@@ -118,6 +122,17 @@
 
 <script src="mybrowser://js/plugins/jquery-ui.min.js"></script>
 <script>
+  let platform = require('os').platform();
+
+  if (platform === 'darwin') {
+    document.querySelector('.app win-controls').style.display = 'none';
+    document.querySelector('.navbar win-controls').style.display = 'none';
+  } else if (platform !== 'win32') {
+    document.querySelector('.navbar .tabs').classList.add('linux');
+    document.querySelector('.app win-controls').setAttribute('platform', 'linux');
+    document.querySelector('.navbar win-controls').setAttribute('platform', 'linux');
+  }
+
   // You can also require other files to run in this process
   console.time('jquery')
   require('jquery')

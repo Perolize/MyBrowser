@@ -33,6 +33,15 @@ body {
     z-index: 9999999999999999999999999999999;
 }
 
+.app .topbar {
+    display: block;
+    height: 2.47rem;
+}
+
+.app .topbar win-controls {
+    float: right;
+}
+
 li {
     list-style: none;
 }
@@ -89,7 +98,7 @@ win-controls[platform="linux"] {
 }
 
 .topbar .tabs.linux {
-    padding-top: 1.5rem;
+    padding-top: 1.6rem;
 }
 
 .topbar .tabs li,
