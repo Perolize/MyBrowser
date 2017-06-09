@@ -1,5 +1,6 @@
 const blankModule = require('./blank');
 const settingsModule = require('./settings');
+const historyModule = require('./history');
 
 function blank() {
     blankModule();
@@ -7,6 +8,10 @@ function blank() {
 
 function settings() {
     settingsModule();
+}
+
+function historyPage() {
+    historyModule();
 }
 
 function defaultFunc() {
@@ -31,6 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
         blank()
     } else if (document.location.href === 'mybrowser://settings') {
         settings();
+    } else if(document.location.href === 'mybrowser://history') {
+        historyPage();
     }
     defaultFunc();
 });

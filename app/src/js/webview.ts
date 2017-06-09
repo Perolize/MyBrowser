@@ -3,6 +3,7 @@ import * as electron from 'electron';
 import * as path from 'path';
 import * as isUrl from 'is-url';
 import * as tld from 'tldjs';
+import * as del from 'del';
 import * as tabs from './tab';
 import * as main from './main';
 import * as urlModule from './url';
@@ -161,6 +162,7 @@ export function onWebViewCreated(id: Number = undefined) {
     onHoverLink(id);
     onOpenView(id);
     onSearch();
+    onClear(id);
     onShow(id)
 }
 
@@ -387,6 +389,25 @@ export function render(page: string, url: string, code: number = 200, desc: stri
     }, { once: true });
 }
 
+export function onClear(id: Number = undefined) {
+    let wv: any;
+    if (id !== undefined) {
+        wv = document.querySelector(`.pages webview[data-id="${id}"]`) as any;
+    } else {
+        wv = document.querySelector('.pages webview.active') as any;
+    }
+
+    wv.addEventListener('ipc-message', (e: any) => {
+        if (e.channel === 'clear-history') {
+            history = [];
+            saveHistory([]);
+        }
+        if (e.channel === 'clear-cache') {
+            del(`${userDataFolder}/history/img`);
+        }
+    });
+}
+
 export function onHistory(id: Number = undefined) {
     let wv: any;
     if (id !== undefined) {
@@ -557,22 +578,24 @@ export function addToHistory(id: Number = undefined) {
             setTimeout(() => {
                 new Promise((fulfill, reject) => {
                     wv.capturePage((img: any) => {
+                        console.log(img.isEmpty());
                         fulfill(img);
                     });
                 })
                     .then((img: any) => {
                         const date = Date.now();
-                        if (history.indexOf({ url: url, title: title, page: `mybrowser://historyFolder/img/${title}-${date}.png`, date: date }) === -1) {
-                            fs.open(path.join(userDataFolder, `./history/img/${title}-${Date.now()}.png`), 'wx', (err: any) => {
+                        if (history.indexOf({ url: url, title: title, page: `mybrowser://historyFolder/img/${encodeURIComponent(url)}.png`, date: date }) === -1) {
+                            fs.open(path.join(userDataFolder, `./history/img/${encodeURIComponent(url)}.png`), 'wx', (err: any) => {
                                 if (err) {
-                                    console.error(err);
+                                    if (err.code !== 'EEXIST') {
+                                        console.error(err);
+                                    }
                                 } else {
-                                    console.log(path.join(userDataFolder, `./history/img/${title}-${date}.png`))
-                                    fs.writeFile(path.join(userDataFolder, `./history/img/${title}-${date}.png`), img.toPNG(), (err: any) => {
+                                    fs.writeFile(path.join(userDataFolder, `./history/img/${encodeURIComponent(url)}.png`), img.toPNG(), (err: any) => {
                                         if (err) {
                                             console.error(err);
                                         } else {
-                                            history.push({ url: url, title: title, page: `mybrowser://historyFolder/img/${title}-${date}.png`, date: date });
+                                            history.push({ url: url, title: title, page: `mybrowser://historyFolder/img/${encodeURIComponent(url)}.png`, date: date });
                                             saveHistory(history);
                                         }
                                     });
