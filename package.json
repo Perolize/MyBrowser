@@ -4,27 +4,17 @@
   "description": "A fully customizable web browser that really was made for you",
   "main": "./app/dist/main.js",
   "scripts": {
-    "build:watch": "tsc -p app/src/ -w",
     "start": "gulp && electron .",
     "watch": "concurrently \"npm start\" \"gulp watch\" ",
-    "movesssets": "cpx \"app/src/*.{html,css}\" app/dist && cpx \"app/src/**/*.{html,css}\" app/dist &&  cpx \"app/src/**/*.{js,js.map}\" app/dist",
-    "watchassets": "onchange \"app/src/**/*.css\" \"app/src/**/*.html\" -e \"app/dist/*\" -v -- cpx \"app/src/**/*.{html,css}\" app/dist",
-    "watchassets2": "onchange \"app/src/*.css\" \"app/src/*.html\" -e \"app/dist/*\" -v -- cpx \"app/src/*.{html,css}\" app/dist",
-    "pack:osx": "electron-packager . --out=build/MyBrowser-v0.0.7 --platform=darwin --arch=x64 --icon=img/icons/icon.icns --app-copyright=\"Copyright © 2017 Perolize, Inc. All rights reserved\" --build-version=0.0.7 --asar --overwrite",
-    "pack:win32": "electron-packager . --out=build/MyBrowser-v0.0.7 --platform=win32 --arch=ia32 --app-version=0.0.7 --icon=\"img/icons/win.ico\" --win32metadata.ProductName=MyBrowser --win32metadata.FileDescription=\"Perolize Browser\" --win32metadata.CompanyName=Perolize --app-copyright=\"Copyright © 2017 Perolize, Inc. All rights reserved\" --win32metadata.OriginalFilename=\"MyBrowser.exe\" --build-version=0.0.7 --asar --overwrite",
-    "pack:win64": "electron-packager . --out=build/MyBrowser-v0.0.7 --platform=win32 --arch=x64 --app-version=0.0.7 --icon=\"img/icons/win.ico\" --win32metadata.ProductName=MyBrowser --win32metadata.FileDescription=\"Perolize Browser\" --win32metadata.CompanyName=Perolize --app-copyright=\"Copyright © 2017 Perolize, Inc. All rights reserved\" --win32metadata.OriginalFilename=\"MyBrowser.exe\" --build-version=0.0.7 --asar  --overwrite",
     "pack": "build --dir -w --x64 --ia32",
     "dist": "build -w --x64 --ia32",
     "postinstall": "install-app-deps"
   },
-  "start": "npm run movesssets && concurrently \"npm run build:watch\" \"electron .\" \"npm run watchassets\" \"npm run watchassets2\" ",
   "repository": "https://github.com/Perolize/MyBrowser",
   "keywords": [
     "MyBrowser",
     "Browser",
-    "Custom",
-    "Developer",
-    "Shopping"
+    "Custom"
   ],
   "author": "Perolize Inc.",
   "license": "LGPL 3.0",
@@ -49,7 +39,7 @@
     "onchange": "^3.2.1",
     "run-sequence": "^1.2.2",
     "tslint": "^4.5.1",
-    "typescript": "^2.3.2",
+    "typescript": "^2.3.4",
     "uglify-js-harmony": "^2.7.7"
   },
   "dependencies": {
