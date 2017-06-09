@@ -62,6 +62,9 @@ export function newTab(tabUrl = 'mybrowser://blank', open: boolean = true, id: a
         if ($('.tabs .nav-item.active').next().hasClass('nav-item')) {
             $('.tabs .nav-item.active').next().addClass('after');
         }
+    } else {
+        custom.reorderTabs($('.tabs li.active'), 'right');
+        $('.tabs li.active').removeClass('before').removeClass('after');
     }
 
     $(`.tabs .nav-item[data-id="${id}"]`).attr('time', Date.now())
@@ -75,7 +78,8 @@ export function newTab(tabUrl = 'mybrowser://blank', open: boolean = true, id: a
     });
 
     webview.onWebViewCreated(id);
-    custom.onTabCreated(id);
+    custom.addTabListeners(id);
+    // custom.onTabCreated(id);
 
     if (tabUrl === 'mybrowser://blank') {
         webview.render('blank', 'mybrowser://blank');

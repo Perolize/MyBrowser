@@ -23,6 +23,12 @@ export function addWebviewListeners(wv: any) {
     });
 }
 
+export function addTabListeners(id: Number) {
+    const $tab = $(`.tabs li[data-id="${id}"]`);
+
+    $tab.on('click', onClickTab);
+}
+
 export function onTabCreated(id: Number = undefined) {
     reorderTabs($(`.tabs li[data-id="${id}"]`), 'both');
 }
@@ -85,3 +91,4 @@ jQuery.fn.reverse = [].reverse;
 
 module.exports.reorderTabs = reorderTabs;
 module.exports.addWebviewListeners = addWebviewListeners;
+module.exports.addTabListeners = addTabListeners;
