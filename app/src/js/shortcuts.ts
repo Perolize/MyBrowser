@@ -19,6 +19,15 @@ Mousetrap.bind(['ctrl+f', 'command+f'], () => {
     }
 });
 
+Mousetrap.bind(['ctrl+h', 'command+h'], () => {
+    const wv: any = document.querySelector('.pages webview.active');
+    if (!wv.src.startsWith('mybrowser://blank')) {
+        tabs.newTab('mybrowser://history');
+    } else {
+        wv.loadURL('mybrowser://history');
+    }
+});
+
 Mousetrap.bind(['ctrl+t', 'command+t'], () => {
     tabs.newTab();
 });
@@ -108,13 +117,13 @@ Mousetrap.bind(['ctrl+w', 'command+w', 'ctrl+f4', 'command+f4'], (e: any) => {
     $(`webview[data-id="${nextTab.attr('data-id')}"]`).addClass('active');
 });
 
-Mousetrap.bind(['alt+left', 'backspace'], () => {
-    (document.querySelector(`.pages webview.active`) as any).goBack();
-});
+// Mousetrap.bind(['alt+left', 'backspace'], () => {
+//     (document.querySelector(`.pages webview.active`) as any).goBack();
+// });
 
-Mousetrap.bind(['alt+right', 'shift+backspace'], () => {
-    (document.querySelector(`.pages webview.active`) as any).goForward();
-});
+// Mousetrap.bind(['alt+right', 'shift+backspace'], () => {
+//     (document.querySelector(`.pages webview.active`) as any).goForward();
+// });
 
 Mousetrap.bind(['ctrl+f5'], () => {
     (document.querySelector(`.pages webview.active`) as any).reloadIgnoringCache();
