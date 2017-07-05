@@ -403,7 +403,8 @@ export function onClear(id: Number = undefined) {
             saveHistory([]);
         }
         if (e.channel === 'clear-cache') {
-            del(`${userDataFolder}/history/img`);
+            console.log(`${userDataFolder}/history/img/`)
+            del([`${userDataFolder}/history/img/**`], {force: true});
         }
     });
 }
