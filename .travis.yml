@@ -13,7 +13,8 @@ addons:
 
 before_script:
   - npm i -g npm@latest
-  - npm install -g gulp-cli
+  - npm i -g gulp-cli
+  - npm i gulp
 script: gulp
 
 install:
