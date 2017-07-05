@@ -4,6 +4,7 @@ const windowStateKeeper = require('electron-window-state');
 const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
+const dialog = electron.dialog;
 const ipcMain = electron.ipcMain
 const ipcRenderer = electron.ipcRenderer;
 const protocol = electron.protocol
@@ -50,6 +51,19 @@ function createWindow() {
   }
   console.time('init');
 
+  mainWindow.webContents.on('crashed', () => {
+    const options = {
+      type: 'error',
+      title: 'MyBrowser Crashed',
+      message: 'MyBrowser had crashed, would you like to reload?',
+      buttons: ['Reload', 'Close']
+    }
+    dialog.showMessageBox(options, (i: any) => {
+      if (i === 0) mainWindow.reload()
+      else mainWindow.close()
+    })
+  });
+
   ipcMain.on('ready-init', (e: any) => {
     console.timeEnd('init')
   });
@@ -57,6 +71,8 @@ function createWindow() {
   ipcMain.on('userData', (e: any) => {
     e.sender.send('userData', app.getPath('userData'));
   });
+
+  app.setAsDefaultProtocolClient('mybrowser');
 
   protocol.registerFileProtocol('mybrowser', (req: any, cb: any) => {
     const fullUrl = path.normalize(`${__dirname}/pages/${req.url.substr(12)}.html`);
