@@ -1,0 +1,33 @@
+.topbar .tabs li.nav-item.before,
+.topbar .tabs li.nav-item,
+.topbar .tabs li.nav-item.after,
+.nav-item.before,
+.nav-item,
+.nav-item.after {
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.topbar .tabs li.nav-item.before {
+    border-left: .1rem solid #a9a8a8!important;
+    border-radius: 0;
+}
+
+.topbar .tabs li.nav-item.after {
+    border-right: .1rem solid #a9a8a8!important;
+    border-radius: 0;
+}
+
+.topbar .tabs li.nav-item.before .tab-close,
+.topbar .tabs li.nav-item .tab-close,
+.topbar .tabs li.nav-item.after .tab-close,
+.nav-item.before .tab-close,
+.nav-item .tab-close,
+.nav-item.after .tab-close {
+    right: .5rem;
+}
+
+.topbar .tabs li.nav-item.after:last-of-type,
+.nav-item {
+    border-right: 0!important;
+}

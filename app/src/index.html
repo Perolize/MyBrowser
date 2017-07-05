@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="./designs/default/default.css">
   <link rel="stylesheet" href="./designs/default/default_small.css">
   <link rel="stylesheet" href="./designs/modern/modern.css">
+  <link rel="stylesheet" href="./designs/moderner/moderner.css">
   <link rel="stylesheet" href="./designs/secure/secure.css">
 
   <script src="https://twemoji.maxcdn.com/2/twemoji.min.js?2.2.3"></script>
@@ -132,8 +133,10 @@
     document.querySelector('.app win-controls').setAttribute('platform', 'linux');
     document.querySelector('.navbar win-controls').setAttribute('platform', 'linux');
   }
+</script>
 
-  // You can also require other files to run in this process
+ <!--build:js ./bundle.min.js -->
+<script>
   console.time('jquery')
   require('jquery')
   console.timeEnd('jquery')
@@ -148,7 +151,10 @@
   require('./designs/modern/modern')
 
   require('./js/notification/notification-handler')();
+</script>
+<!--endbuild -->
 
+<script>
   const { ipcRenderer, remote } = require('electron');
   const main = require('./js/main.js')
   const selectedSearchEngine = require('./settings').selectedSearchEngine;

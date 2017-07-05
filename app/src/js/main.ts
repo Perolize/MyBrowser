@@ -3,6 +3,7 @@ import * as EventEmitter from 'events';
 import * as isUrl from 'is-url';
 import * as normalizeUrl from 'normalize-url';
 import * as tabs from './tab';
+import * as custom from '../designs/default/default';
 import * as settings from '../settings';
 import * as webview from './webview';
 import * as url from './url';
@@ -282,6 +283,8 @@ export function onClickRemoveTab(e: Event) {
             if ($(`.tabs li[data-id="${currentId}"]`).next().hasClass('nav-item')) {
                 $(`.tabs li[data-id="${currentId}"]`).next().addClass('after');
             }
+
+            custom.reorderTabs($(`.tabs li[data-id="${currentId}"]`), 'both');
 
             if (isTyping) {
                 input = $('.navigation .url').text();

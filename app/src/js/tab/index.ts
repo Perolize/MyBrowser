@@ -79,7 +79,7 @@ export function newTab(tabUrl = 'mybrowser://blank', open: boolean = true, id: a
 
     webview.onWebViewCreated(id);
     custom.addTabListeners(id);
-    // custom.onTabCreated(id);
+    custom.onTabCreated(id);
 
     if (tabUrl === 'mybrowser://blank') {
         webview.render('blank', 'mybrowser://blank');
