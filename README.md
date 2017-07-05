@@ -15,7 +15,7 @@ You can also [visit our website (WIP)](https://www.perolize.com/mybrowser) To ge
 
 ### Prerequests
 
-1. **nodejs >= 6.1**
+1. **nodejs >= 7.4.0**
 
     You can install it from [nodejs' website](https://nodejs.org)
 
